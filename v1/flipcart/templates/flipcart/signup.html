@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        <h3>sign up</h3>
+        {% csrf_token %}
+        <form action="/signup" method = "post">
+            <lable for="">username</lable>
+            <input type="text" id="username" name="username" placeholder="creat a username(only letters and numbers)"Required> 
+            <br>
+        <form action="">
+            <lable for="">fname</lable>
+            <input type="text" id="first name" name="first name" placeholder="enter your 1st name(only letters and numbers)"Required>
+            <br>
+        <form action="">
+            <lable for="">lname</lable>
+            <input type="text" id="last name" name="last name" placeholder="enter your last name(only letters and numbers)"Required> 
+            <br>
+        <form action="">
+            <lable for="">date of birth</lable>
+            <input type="text" id="date of birth" name="dste of birth" placeholder="enter your date of birth"Required> 
+            <br>
+        <form action="">
+            <lable for="">email</lable>
+            <input type="email" id="email" name="email" placeholder="enter your email"Required> 
+            <br>
+        <form action="">
+            <lable for="">password</lable>
+            <input type="password" id="password" name="password" placeholder="creat a password" Required>
+            <br>
+            <lable for=""> cpassword</lable>
+            <input type="password" id="Confirm password" name=" Confirm password" placeholder="confirm your" Required>
+            <br>
+            <button type="submit"><a href="/signup">sign up</a></button> 
+        </form>    
+        
+        <script src="" async defer></script>
+    </body>
+</html>

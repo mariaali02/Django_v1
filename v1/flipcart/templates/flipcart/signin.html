@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>FLIPCART</title>
+    <meta name="" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+</head>
+<body>
+    <h3>sign in</h3>
+
+        <form action="/signin" method = "post">
+            {% csrf_token %}
+            <lable for="">username</lable>
+            <input type="text" id="username" name="username" placeholder="enter username(only letters and numbers)"Required> 
+            <br>
+        <form action="">
+                <lable for="">password</lable>
+                <input type="password" id="password" name="password" placeholder="enter password" Required>
+    <button type="submit"><a href="/signin">Sign In</a></button>
+    <br>
+
+    <script src="" async defer></script>
+</body>
+</html>

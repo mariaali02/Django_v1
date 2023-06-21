@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <h3>WELCOME TO EPAZZ</h3>
+
+        {% if user.is_authenticated %}
+            <h3>You are at right place </h3>
+            <p>{{ message }}</p>
+        {% endif %}
+        <button type="submit"><a href="/signout">Sign out</a></button>
+    </head>
+    <body>
+        
+        
+        <script src="" async defer></script>
+    </body>
+</html>
