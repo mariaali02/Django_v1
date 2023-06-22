@@ -6,7 +6,7 @@
 <html>
     <head>
         <h3>WELCOME TO EPAZZ</h3>
-        {% csrf_token %}
+        
         {% if user.is_authenticated %}
             <h3>You are at right place </h3>
             <p>{{ message }}</p>

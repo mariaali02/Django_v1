@@ -14,35 +14,30 @@
     </head>
     <body>
         <h3>sign up</h3>
-        {% csrf_token %}
-        <form action="/signup" method = "post">
+        <form action="/signup/" method = "post">
+            {% csrf_token %}
             <lable for="">username</lable>
             <input type="text" id="username" name="username" placeholder="creat a username(only letters and numbers)"Required> 
             <br>
-        <form action="">
             <lable for="">fname</lable>
             <input type="text" id="first name" name="first name" placeholder="enter your 1st name(only letters and numbers)"Required>
             <br>
-        <form action="">
             <lable for="">lname</lable>
             <input type="text" id="last name" name="last name" placeholder="enter your last name(only letters and numbers)"Required> 
             <br>
-        <form action="">
             <lable for="">date of birth</lable>
             <input type="text" id="date of birth" name="dste of birth" placeholder="enter your date of birth"Required> 
             <br>
-        <form action="">
             <lable for="">email</lable>
             <input type="email" id="email" name="email" placeholder="enter your email"Required> 
             <br>
-        <form action="">
             <lable for="">password</lable>
             <input type="password" id="password" name="password" placeholder="creat a password" Required>
             <br>
             <lable for=""> cpassword</lable>
             <input type="password" id="Confirm password" name=" Confirm password" placeholder="confirm your" Required>
             <br>
-            <button type="submit"><a href="/signup">sign up</a></button> 
+            <button type="submit">sign up</button> 
         </form>    
         
         <script src="" async defer></script>

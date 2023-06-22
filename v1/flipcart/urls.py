@@ -13,8 +13,8 @@ urlpatterns = [
     # Other URL patterns
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
-    path('signup', views.signup, name='signup'),
-    path('signin', views.signin, name='signin'),
+    path('signup/', views.signup, name='signup'),
+    path('signin/', views.signin, name='signin'),
     path('hello/', hello_world, name='hello_world'),
     path('signout/', views.signout, name='signout'),
     
