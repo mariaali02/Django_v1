@@ -43,4 +43,4 @@ def signup(request):
         myuser.last_name = lname
         myuser.save()
         messages.success(request, "information saved successfully")
-    return render(request, "flipcart/signup.html")
+    return render(request, "flipcart/msg.html")
