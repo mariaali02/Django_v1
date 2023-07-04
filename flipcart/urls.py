@@ -7,7 +7,7 @@ urlpatterns = [
 from django.contrib import admin
 from django.urls import path
 from flipcart import views
-from . views import signin,hello_world,signout,home,signup
+from . views import signin,hello_world,signout,home,signup,msg
 
 urlpatterns = [
     # Other URL patterns
@@ -16,6 +16,7 @@ urlpatterns = [
     path('signin/', views.signin, name='signin'),
     path('hello/', hello_world, name='hello_world'),
     path('signout/', views.signout, name='signout'),
+    path('msg/', views.msg, name='msg'),
     
 ]
 
