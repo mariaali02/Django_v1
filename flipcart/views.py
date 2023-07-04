@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render,HttpResponse
 from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -10,24 +10,18 @@ def signup(request):
     
     if request.method == "POST":
         username = request.POST['username']
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        dbirth = request.POST['dbirth']
+        dbirth = request.POST['date_of_birth']
         email = request.POST['email']
         password = request.POST['password']
         cpassword = request.POST['cpassword']
-        
-        myuser = User.objects.create_user(username, email, password)
-        myuser.first_name = first_name
-        myuser.last_name = last_name
-        
-        myuser.save()
-        
-        messages.success(request, "information saved successfully")
-        return render(request, "flipcart/msg.html")
 
-    
+        if password!=cpassword:
+            return HttpResponse("Your password and confrom password are not Same!!")
+        else:
 
+            myuser = User.objects.create_user(username, email, password)
+            myuser.save()
+        return redirect('signin')
     return render(request, "flipcart/signup.html")
 
 def signin(request):

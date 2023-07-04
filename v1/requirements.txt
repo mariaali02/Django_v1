@@ -1,3 +1,0 @@
-install python interpreter
-creat virtual env
-install django
