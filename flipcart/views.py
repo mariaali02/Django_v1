@@ -52,7 +52,14 @@ def signin(request):
 
 @login_required(login_url="/signin")
 def hello_world(request):
-    return render(request, "flipcart/hello.html")
+    current_user = request.user
+    user_username = current_user.username
+
+    context = {
+        'user_username': user_username
+    }
+
+    return render(request, 'flipcart/db.html', context)
 
 
 def signout(request):

@@ -1,31 +1,87 @@
-<div class="container">
-    <h1>WELCOME TO EPAZZ</h1>
-    <form name="registration" class="registartion-form" onsubmit="return formValidation()" method="post" action="/signup/">
-        {% csrf_token %}
-        <table>
-            <tr>
-                <td><label for="username">username:</label></td>
-                <td><input type="text" name="username" id="username" placeholder="enter your name"></td>
-            </tr>
-            <tr>
-                <td><label for="email">Email:</label></td>
-                <td><input type="email" name="email" id="email" placeholder="your email"></td>
-            </tr>
-            <tr>
-                <td><label for="dbirth"> Date Of Birth :</label></td>
-                <td><input type="date" name="date_of_birth" id="date_of_birth"></td>
-            </tr>
-            <tr>
-                <td><label for="password">Password:</label></td>
-                <td><input type="password" name="password" id="password"></td>
-            </tr>
-            <tr>
-                <td><label for="confirm_password">Confirm Password:</label></td>
-                <td><input type="password" name="cpassword" id="confirm_password"></td>
-            </tr>
-            <tr>
-                <td colspan="2"><input type="submit" class="submit" value="Register" /></td>
-            </tr>
-        </table>
-    </form>
-</div>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registration Form</title>
+    <link ref="stylesheet" type="text/css" href="style.css">
+    <script>
+        function formValidation() {
+            var username = document.getElementById("username").value;
+            var email = document.getElementById("email").value;
+            var usernameError = document.getElementById("username-error");
+            var emailError = document.getElementById("email-error");
+        
+            usernameError.innerHTML = "";
+            emailError.innerHTML = "";
+        
+            if (username.trim() === "") {
+                usernameError.innerHTML = "Please enter your username.";
+                return false;
+            }
+        
+            if (!isValidEmail(email)) {
+                emailError.innerHTML = "Please enter a valid email address.";
+                return false;
+            }
+        
+            if (!isValidUsername(username)) {
+                usernameError.innerHTML = "Username should only contain letters, numbers, and underscore.";
+                return false;
+            }
+        
+            return true;
+        }
+        
+        function isValidEmail(email) {
+            var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            return emailPattern.test(email);
+        }
+        
+        function isValidUsername(username) {
+            var usernamePattern = /^[a-zA-Z0-9_]+$/;
+            return usernamePattern.test(username);
+        }
+        
+    </script>
+</head>
+<body>
+    <div class="signup">
+        <h1>WELCOME TO EPAZZ</h1>
+        <form name="registration" class="registration-form" onsubmit="return formValidation()" method="post" action="/signup/">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td><label for="username">Username:</label></td>
+                    <td><input type="text" spellcheck="false" name="username" id="username" placeholder="Enter your name"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><span id="username-error"></span></td>
+                </tr>
+                <tr>
+                    <td><label for="email">Email:</label></td>
+                    <td><input type="email" spellcheck="false" name="email" id="email" placeholder="Your email"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><span id="email-error"></span></td>
+                </tr>
+                <tr>
+                    <td><label for="dbirth">Date Of Birth:</label></td>
+                    <td><input type="date" name="date_of_birth" id="date_of_birth"></td>
+                </tr>
+                <tr>
+                    <td><label for="password">Password:</label></td>
+                    <td><input type="password" name="password" id="password"></td>
+                </tr>
+                <tr>
+                    <td><label for="confirm_password">Confirm Password:</label></td>
+                    <td><input type="password" name="cpassword" id="confirm_password"></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input type="submit" class="submit" value="Register" /></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</body>
+</html>
