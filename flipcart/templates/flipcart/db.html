@@ -50,10 +50,17 @@
                 <th>ID</th>
                 <th>USERNAME</th>
                 <th>EMAIL</th>
-                <th>JOINING DATE</th>
+                <th>DATE OF BIRTH</th>
                 <th></th>
             </tr>
         </thead>
+        {% for n in clist %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+        </tr>
+        {% endfor %}
         <tbody>
             <tr>
                 <td></td>
