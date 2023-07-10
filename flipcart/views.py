@@ -51,21 +51,11 @@ def signin(request):
 
 @login_required(login_url="/signin")
 def hello_world(request):
-    current_user = request.user
-    user_id = current_user.id
-    user_username = current_user.username
-    user_email = current_user.email
     users = User.objects.all()
 
     context = {
-        'clist':[user_id,user_username,user_email],
-        'student_detail':{
-        'user_id': user_id,
-        'user_username': user_username,
-        'user_email': user_email,
-            
-        }
- 
+        'users': users
+
     }
 
 

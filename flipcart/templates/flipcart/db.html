@@ -42,53 +42,34 @@
         
     </style>
 </head>
+<html>
+<head>
+    <title>User List</title>
+</head>
 <body>
-                                <h1>HELLO WORLD </h1>
+    <h1>User List</h1>
     <table>
         <thead>
             <tr>
                 <th>ID</th>
-                <th>USERNAME</th>
-                <th>EMAIL</th>
-                <th>DATE OF BIRTH</th>
-                <th></th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Date of Birth</th>
             </tr>
         </thead>
-        {% for n in clist %}
-        <tr>
-            <td>{{ user.id }}</td>
-            <td>{{ user.username }}</td>
-            <td>{{ user.email }}</td>
-        </tr>
-        {% endfor %}
         <tbody>
+            {% for user in users %}
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.date_of_birth }}</td>
             </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
             </tr>
             <!-- Add more rows for other users -->
         
