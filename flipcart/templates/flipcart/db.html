@@ -4,21 +4,33 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>HELLO WORLD</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-<html>
 <head>
-    <title>User Table</title>
-    <h1>Welcome to the EPAZZ Dashboard</h1>
-    <h3>User name: {{ user_username}}</h3>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HELLO WORLD</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
     <style>
+        .container {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+
+        .message {
+            margin-top: 20px;
+        }
+
         table {
             border-collapse: collapse;
             width: 100%;
@@ -33,52 +45,61 @@
         th {
             background-color: white;
         }
-        /* styles.css */
 
         h1 {
             text-align: center;
             font-weight: bold;
         }
-        
+
+        .signout-btn {
+            margin-top: 20px;
+        }
     </style>
 </head>
-<html>
-<head>
-    <title>User List</title>
-</head>
 <body>
-    <h1>User List</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Date of Birth</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.username }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.date_of_birth }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</body>
-</html>
-            </tr>
-            
-        </tbody>
-    </table>
-    <button class="signout-btn" type="submit"><a href="/signout">Sign Out</a></button>
-</body>
-</html>
+    <div class="container">
+        <h1 class="title">WELCOME TO EPAZZ</h1>
 
-        
-        <script src="" async defer></script>
-    </body>
+        {% if user.is_authenticated %}
+            {% if user.is_superuser %}
+                <h1>Dashboard</h1>
+                <h3>User name: {{ user.username }}</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Date of Joining</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.date_joined }}</td>
+                                <td>{{can_delete_update}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <button class="signout-btn" type="submit"><a href="/signout">Sign Out</a></button>
+            {% else %}
+                <h3 class="subtitle">You are in the right place</h3>
+                <p class="message">{{ message }}</p>
+                <button class="signout-btn" type="submit"><a href="/signout">Sign Out</a></button>
+            {% endif %}
+        {% else %}
+            <h3 class="subtitle">invalid user!</h3>
+            <p class="message">Please log in to access the site.</p>
+        {% endif %}
+    </div>
+
+    <script src="" async defer></script>
+</body>
 </html>
