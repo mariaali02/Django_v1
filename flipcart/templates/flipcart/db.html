@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
 <html>
 <head>
     <meta charset="utf-8">
@@ -72,7 +68,9 @@
                             <th>Username</th>
                             <th>Email</th>
                             <th>Date of Joining</th>
-                            <th>Actions</th>
+                            {% if can_delete_update %}
+                                <th>Actions</th>
+                            {% endif %}
                         </tr>
                     </thead>
                     <tbody>
@@ -82,7 +80,18 @@
                                 <td>{{ user.username }}</td>
                                 <td>{{ user.email }}</td>
                                 <td>{{ user.date_joined }}</td>
-                                <td>{{can_delete_update}}</td>
+                                {% if can_delete_update %}
+                                    <td>
+                                        <form action="{% url 'dlt_user' user_id=user.id %}"method="POST">
+                                            {% csrf_token %}
+                                            <button type="delete"><a href=" {% url 'dlt_user' user_id=user.id %}/">delete</a></button>
+                                        </td>
+                                        
+                                        <form action="{% url 'update_user/' user_id=user.id %}" method="POST">
+                                            {% csrf_token %}
+                                            <button type="patch"><a href=" {% url 'update_user/' user_id=user.id %}/">update</a></button>
+                                    </td>
+                                {% endif %}
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -95,7 +104,7 @@
                 <button class="signout-btn" type="submit"><a href="/signout">Sign Out</a></button>
             {% endif %}
         {% else %}
-            <h3 class="subtitle">invalid user!</h3>
+            <h3 class="subtitle">Invalid user!</h3>
             <p class="message">Please log in to access the site.</p>
         {% endif %}
     </div>

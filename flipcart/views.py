@@ -36,7 +36,6 @@ def signup(request):
 
     return render(request, "flipcart/signup.html")
 
-
 def signin(request):
     if request.method == "POST":
         username = request.POST.get('username')
@@ -49,7 +48,7 @@ def signin(request):
 
             context = {
                 'users': users,
-                
+                'can_delete_update': True,  # Set a flag to indicate the superuser can delete and update
             }
             return render(request, "flipcart/db.html", context)
         elif user is not None and user.is_authenticated:
@@ -60,6 +59,7 @@ def signin(request):
             return render(request, "flipcart/invalid.html", {'error_message': error_message})
 
     return render(request, "flipcart/signin.html")
+
 
 
 @login_required(login_url="/signin")
@@ -102,6 +102,7 @@ def admin_login(request):
     return render(request, 'flipcart/login.html')
 
 """
+""""
 @login_required(login_url="/signin")
 def create_user(request):
     if request.method == "POST":
@@ -127,3 +128,37 @@ def create_user(request):
 
             # Redirect to the home page or any other desired page
             return redirect('msg')
+"""
+@login_required
+def dlt_user(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        user.delete()
+        messages.success(request, "The user is deleted.")
+    except User.DoesNotExist:
+        messages.error(request, "The user does not exist.")
+    return redirect('signin')
+
+
+@login_required
+def update_user(request,user_id):
+    if not request.user.is_superuser:
+        messages.error(request, "You do not have permission to update users.")
+        return redirect('signin')
+
+    if request.method == "POST":
+        try:
+            user = User.objects.get(user=user_id)
+            username = request.POST.get('username')
+            email = request.POST.get('email')
+            date_of_birth = request.POST.get('date_of_birth')
+
+            user.username = username
+            user.email = email
+            user.date_of_birth = date_of_birth
+            user.save()
+            messages.success(request, "User updated successfully.")
+            return redirect('signin')
+        except User.DoesNotExist:
+            messages.error(request, "The user does not exist.")
+    return redirect('signin')
