@@ -6,7 +6,7 @@
     <title>HELLO WORLD</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="show and hide div with j.s">
     <style>
         .container {
             text-align: center;
@@ -45,14 +45,26 @@
         h1 {
             text-align: center;
             font-weight: bold;
-        }
-
+        } 
         .signout-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
             margin-top: 20px;
         }
-        .update-form{
-            display:none;
+
+        . function show{
+            height: 0px;
+            display:block;
+            display: none;
         }
+        .function hide{
+            height: 0px;
+            display:none;
+            display: none;
+        }
+
+        
     </style>
 </head>
 <body>
@@ -92,39 +104,52 @@
                                         </form>
                                         <form action="{% url 'update' user_id=user.id %}" method="patch">
                                             {% csrf_token %}
-                                            <!-- form fields and other elements -->
-                                            <button type="patch"> <a href="{% url 'update' user_id=user.id %}">UPDATE</a></button>
-                                        </td>
+                                            {% comment %} <button type="button" onclick="toggleUpdateForm('{{ user.id }}')">
+                                                <a href="{% url 'update' user_id=user.id %}">Update</a>
+                                            </button> {% endcomment %}
+                                            <button type="button" onclick="ShowUpdateView()">
+                                                Update                                                
+                                            </button>
+                                    </td>
                                 {% endif %}
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
 
-                <div class="update-form" id="">
-                    <h2>Update User</h2>
-                    <form id="update-form" method="POST">
+                <div class="update-form" id='divUpdateForm' style='display:none;'> 
+                    <h2>Updated User</h2>
+                    <form id="update-form">
                         {% csrf_token %}
-                        <input type="hidden" id="user-id" name="user_id" value="">
-                        <div>
-                            <label for="username">Username</label>
-                            <input type="text" id="username" name="username">
-                        </div>
-                        <div>
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email">
-                        </div>
-                        <div>
-                            <label for="date_joined">Date of Joining</label>
-                            <input type="date" id="date_joined" name="date_joined">
-                            <form action="{% url 'update' user_id=user.id %}" method="patch">
-                                {% csrf_token %}
-                                <!-- form fields and other elements -->
-                                <button type="patch"> <a href="{% url 'update' user_id=user.id %}">UPDATE</a></button>
-                        </div>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Username</th>
+                                                <th>Email</th>
+                                                <th>Date of Joining</th>
+                                                    <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for user in users %}
+                                                <tr>
+                                                    <td>{{ user.id }}</td>
+                                                    <td>{{ user.username }}</td>
+                                                    <td>{{ user.email }}</td>
+                                                    <td>{{ user.date_joined }}</td>
+                                                    
+                                                        <td>
+                                                            
+                                                <h3>{{ user.username }}</h3>
+                                                <!-- Display other user information here -->            
+                        <button type="button" onclick="hide"> <a href="{% url 'update' user_id=user.id %}">edit</a>
+                            
                     </form>
                 </div>
-
+            </td>                          
+        </tr>
+            {% endfor %}
                 <button class="signout-btn" type="submit"><a href="/signout">Sign Out</a></button>
             {% else %}
                 <h3 class="subtitle">You are in the right place</h3>
@@ -138,18 +163,27 @@
     </div>
 
     <script>
-        function toggleUpdateForm(userId) {
-            const updateForm = document.getElementById('.update-form');
-            const userIdInput = updateForm.getElementById('#user-id');
-
-            if (updateForm.style.display === 'none') {
-                updateForm.style.display = 'block';
-                userIdInput.value = userId;
-            } else {
-                updateForm.style.display = 'none';
-                userIdInput.value = '';
-            }
+        const addInput = document.querySelector('#addInput');
+        const addBtn = document.querySelector('#addBtn');
+ 
+        function ShowUpdateView(){
+            document.getElementById('divUpdateForm').style.display = 'block';
         }
+
+        function addLists() {
+        if (addInput.value === '') {
+            alert('Enter the list name please!!!');
+        } 
+        else {
+            const ul = divList.querySelector('ul');
+            const li = document.createElement('li');
+            li.innerHTML = addInput.value;
+            addInput.value = '';
+            ul.appendChild(li);
+            createBtn(li);
+        }
+        }
+        
     </script>
 </body>
 </html>

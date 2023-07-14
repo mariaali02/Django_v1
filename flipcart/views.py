@@ -141,24 +141,44 @@ def dlt(request,user_id):
     return render(request, "flipcart/db.html")
 
 
-@login_required
+def edit(request):
+    user = request.user
+
+    if request.method == 'POST':
+        form= User.UpdateForm(request.POST, instance=user)
+        if user.is_valid():
+            form.save()
+            messages.success(request, 'Your information has been updated successfully.')
+            return redirect('dashboard')
+    else:
+        form= User.UpdateForm(instance=user)
+
+    context = {
+        'form': form,
+        'user': user
+    }
+    
 @login_required
 def update(request, user_id):
-    
     try:
         user = User.objects.get(id=user_id)
         username = request.POST.get('username')
         email = request.POST.get('email')
-        date_of_birth = request.POST.get('date_of_birth')
 
+        # Check if the user exists
+        if user:
             # Check if the username is provided
-        if username:
-            user.username = username
-            user.email = email
-            user.date_of_birth = date_of_birth
-            user.save()
+            if username:
+                user.username = username
+                user.email = email
+                # Save the user
+                user.save()
+                messages.success(request, "User updated successfully.")
 
-            messages.success(request, "User updated successfully.")   
     except User.DoesNotExist:
         messages.error(request, "The user does not exist.")
-    return render(request, "flipcart/db.html")
+
+    users = User.objects.all()
+    return render(request, "flipcart/db.html", {'users': users})
+
+
