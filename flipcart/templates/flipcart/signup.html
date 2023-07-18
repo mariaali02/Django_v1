@@ -2,51 +2,79 @@
 <html>
 <head>
     <title>Registration Form</title>
-    <link ref="stylesheet" type="text/css" href="style.css">
-    <script>
-        function formValidation() {
-            var username = document.getElementById("username").value;
-            var email = document.getElementById("email").value;
-            var usernameError = document.getElementById("username-error");
-            var emailError = document.getElementById("email-error");
-        
-            usernameError.innerHTML = "";
-            emailError.innerHTML = "";
-        
-            if (username.trim() === "") {
-                usernameError.innerHTML = "Please enter your username.";
-                return false;
-            }
-        
-            if (!isValidEmail(email)) {
-                emailError.innerHTML = "Please enter a valid email address.";
-                return false;
-            }
-        
-            if (!isValidUsername(username)) {
-                usernameError.innerHTML = "Username should only contain letters, numbers, and underscore.";
-                return false;
-            }
-        
-            return true;
+    <style>
+        body {
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 50;
         }
-        
-        function isValidEmail(email) {
-            var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-            return emailPattern.test(email);
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            background-color: green;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
         }
-        
-        function isValidUsername(username) {
-            var usernamePattern = /^[a-zA-Z0-9_]+$/;
-            return usernamePattern.test(username);
+
+        .header h1 {
+            font-size: 24px;
+            color: black;
+            padding: 20px;
         }
+
+        .signup {
+            background-color: green;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+
+        .registration-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .error {
+            color: red;
+        }  
+    .button {
+        background-color: white;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 15px;
+        color: black;
         
-    </script>
-</head>
+    }
+
+    .button:hover {
+        background-color: green;
+    }
+
+    </style>
 <body>
+    <div class="header">
+        <h1>Welcome to EPAZZ</h1>
+    </div>
     <div class="signup">
-        <h1>WELCOME TO EPAZZ</h1>
-        <form name="registration" class="registration-form" onsubmit="return formValidation()" method="post" action="/signup/">
+        <h2>REGISTERATION FORM</h2>
+        <form name="registration" class="registration-form" onclick="return formValidation()" method="post" action="/signup/">
             {% csrf_token %}
             <table>
                 <tr>
@@ -70,18 +98,119 @@
                     <td><input type="date" name="date_of_birth" id="date_of_birth"></td>
                 </tr>
                 <tr>
+                    <td></td>
+                    <td><span id="dob-error"></span></td>
+                </tr>
+                <tr>
                     <td><label for="password">Password:</label></td>
                     <td><input type="password" name="password" id="password"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><span id="password-error"></span></td>
                 </tr>
                 <tr>
                     <td><label for="confirm_password">Confirm Password:</label></td>
                     <td><input type="password" name="cpassword" id="confirm_password"></td>
                 </tr>
                 <tr>
-                    <td colspan="2"><input type="submit" class="submit" value="Register" /></td>
+                    <td></td>
+                    <td><span id="cpassword-error"></span></td>
                 </tr>
+                <tr>
             </table>
         </form>
+        <button type="submit" class="button" onclick="return formValidation()"><a href="/signup">Sign Up</a></button>
+
     </div>
+    <script>
+        function formValidation() {
+            var username = document.getElementById("username").value;
+            var email = document.getElementById("email").value;
+            var password = document.getElementById("password").value;
+            var cPassword = document.getElementById("cpassword").value;
+            var dob = document.getElementById("date_of_birth").value;
+            var usernameError = document.getElementById("username-error");
+            var emailError = document.getElementById("email-error");
+            var passwordError = document.getElementById("password-error");
+            var cpasswordError = document.getElementById("cpassword-error");
+            var dobError = document.getElementById("dob-error");
+        
+            usernameError.innerHTML = "";
+            emailError.innerHTML = "";
+            passwordError.innerHTML = "";
+            confirmPasswordError.innerHTML = "";
+            dobError.innerHTML = "";
+        
+            if (username.trim() === "") {
+                usernameError.innerHTML = "Please enter your username.";
+                return false;
+            }
+        
+            if (!isValidEmail(email)) {
+                emailError.innerHTML = "Please enter a valid email address.";
+                return false;
+            }
+        
+            if (!isValidUsername(username)) {
+                usernameError.innerHTML = "Username should only contain letters, numbers, and underscore.";
+                return false;
+            }
+        
+            if (!isValidPassword(password)) {
+                passwordError.innerHTML = "Password must be 6 characters long and contain numbers and a special character.";
+                return false;
+            }
+        
+            if (!isValidCPassword(password, cPassword)) {
+                confirmPasswordError.innerHTML = "Passwords do not match.";
+                return false;
+            }
+        
+            if (!isValidDOB(dob)) {
+                dobError.innerHTML = "Please enter a valid date of birth.";
+                return false;
+            }
+        
+            return true;
+        }
+    
+        function isValidEmail(email) {
+            var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            return emailPattern.test(email);
+        }
+        
+        function isValidUsername(username) {
+            var usernamePattern = /^[a-zA-Z0-9_]+$/;
+            return usernamePattern.test(username);
+        }
+        function isValidPassword(password) {
+            // Password must be at least 6 characters long
+            if (password.length < 6) {
+                return false;
+            }
+            
+            // Password must contain at least one special character
+            if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+                return false;
+            }
+            
+            return true;
+        }
+    
+        function isValidCPassword(password, cPassword) {
+            return password === cPassword;
+        }
+    
+        function isValidDOB(dob) {
+            var currentDate = new Date();
+            var selectedDate = new Date(dob);
+        
+            return selectedDate < currentDate;
+        }
+        
+    </script>
+    
+</head>
 </body>
 </html>

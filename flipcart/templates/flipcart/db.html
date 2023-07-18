@@ -72,17 +72,18 @@
         <h1 class="title">WELCOME TO EPAZZ</h1>
 
         {% if user.is_authenticated %}
-            {% if user.is_superuser %}
                 <h1>Dashboard</h1>
                 <h3>User name: {{ user.username }}</h3>
 
                 <table>
                     <thead>
                         <tr>
+                            
                             <th>ID</th>
                             <th>Username</th>
                             <th>Email</th>
                             <th>Date of Joining</th>
+                        {% if user.is_superuser %}
                             {% if can_delete_update %}
                                 <th>Actions</th>
                             {% endif %}
@@ -124,6 +125,7 @@
                                     <table>
                                         <thead>
                                             <tr>
+                                                <th><input type="checkbox" id="selectAllCheckbox" onchange="toggleAllCheckboxes()"></th>
                                                 <th>ID</th>
                                                 <th>Username</th>
                                                 <th>Email</th>
@@ -134,6 +136,7 @@
                                         <tbody>
                                             {% for user in users %}
                                                 <tr>
+                                                    <td><input type="checkbox" id="selectAllCheckbox" onchange="toggleAllCheckboxes()"></td>
                                                     <td>{{ user.id }}</td>
                                                     <td>{{ user.username }}</td>
                                                     <td>{{ user.email }}</td>
@@ -165,25 +168,39 @@
     <script>
         const addInput = document.querySelector('#addInput');
         const addBtn = document.querySelector('#addBtn');
- 
-        function ShowUpdateView(){
+    
+        function ShowUpdateView() {
             document.getElementById('divUpdateForm').style.display = 'block';
         }
-
+    
         function addLists() {
-        if (addInput.value === '') {
-            alert('Enter the list name please!!!');
-        } 
-        else {
-            const ul = divList.querySelector('ul');
-            const li = document.createElement('li');
-            li.innerHTML = addInput.value;
-            addInput.value = '';
-            ul.appendChild(li);
-            createBtn(li);
+            if (addInput.value === '') {
+                alert('Enter the list name please!!!');
+            } else {
+                const ul = divList.querySelector('ul');
+                const li = document.createElement('li');
+                li.innerHTML = addInput.value;
+                addInput.value = '';
+                ul.appendChild(li);
+                createBtn(li);
+            }
         }
+    
+        function toggleCheckbox(checkbox) {
+            const selectAllCheckbox = document.querySelector('#selectAllCheckbox');
+            const userCheckboxes = document.querySelectorAll('input[name="userCheckbox"]');
+    
+            if (!checkbox.checked) {
+                selectAllCheckbox.checked = false;
+            } else {
+                const allChecked = Array.from(userCheckboxes).every(function (checkbox) {
+                    return checkbox.checked;
+                });
+    
+                selectAllCheckbox.checked = allChecked;
+            }
         }
-        
     </script>
+    
 </body>
 </html>
