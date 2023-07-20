@@ -8,6 +8,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="show and hide div with j.s">
     <style>
+        body {
+            background-color: black;
+            height: 100vh; 
+            margin: 0;
+            padding: 0; 
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            background-color: green;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
         .container {
             text-align: center;
             margin-top: 50px;
@@ -28,18 +43,19 @@
         }
 
         table {
+            color:white;
             border-collapse: collapse;
             width: 100%;
         }
 
         th, td {
-            border: 1px solid black;
-            padding: 8px;
+            border: 2px solid white;
+            padding: 10px;
             text-align: left;
         }
 
         th {
-            background-color: white;
+            background-color: green;
         }
 
         h1 {
@@ -53,117 +69,124 @@
             margin-top: 20px;
         }
 
-        . function show{
+        /* Remove the spaces in the class names */
+        .functionShow {
             height: 0px;
-            display:block;
+            display: block;
             display: none;
         }
-        .function hide{
+        
+        .functionHide {
             height: 0px;
-            display:none;
             display: none;
         }
+    </style>
 
         
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="title">WELCOME TO EPAZZ</h1>
-
-        {% if user.is_authenticated %}
-                <h1>Dashboard</h1>
-                <h3>User name: {{ user.username }}</h3>
-
-                <table>
-                    <thead>
-                        <tr>
-                            
-                            <th>ID</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Date of Joining</th>
-                        {% if user.is_superuser %}
-                            {% if can_delete_update %}
-                                <th>Actions</th>
-                            {% endif %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for user in users %}
+    <body>
+        <div class="header">
+            <h1>Welcome to EPAZZ</h1>
+        </div>
+        <div class="container">
+            <h1 class="title">WELCOME TO EPAZZ</h1>
+    
+            {% if user.is_authenticated %}
+                    <h1>Dashboard</h1>
+                    <h3>User name: {{ user.username }}</h3>
+    
+                    <table>
+                        <thead>
                             <tr>
-                                <td>{{ user.id }}</td>
-                                <td>{{ user.username }}</td>
-                                <td>{{ user.email }}</td>
-                                <td>{{ user.date_joined }}</td>
+                                
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Date of Joining</th>
+                            {% if user.is_superuser %}
                                 {% if can_delete_update %}
-                                    <td>
-                                        <form action="{% url 'dlt' user_id=user.id %}" method="Delete">
-                                            {% csrf_token %}
-                                            <!-- form fields and other elements -->
-                                            <button type="Delete"> <a href="{% url 'dlt' user_id=user.id %}">Delete</a></button>
-                                        </form>
-                                        <form action="{% url 'update' user_id=user.id %}" method="patch">
-                                            {% csrf_token %}
-                                            {% comment %} <button type="button" onclick="toggleUpdateForm('{{ user.id }}')">
-                                                <a href="{% url 'update' user_id=user.id %}">Update</a>
-                                            </button> {% endcomment %}
-                                            <button type="button" onclick="ShowUpdateView()">
-                                                Update                                                
-                                            </button>
-                                    </td>
+                                    <th>Actions</th>
                                 {% endif %}
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-
-                <div class="update-form" id='divUpdateForm' style='display:none;'> 
-                    <h2>Updated User</h2>
-                    <form id="update-form">
-                        {% csrf_token %}
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th><input type="checkbox" id="selectAllCheckbox" onchange="toggleAllCheckboxes()"></th>
-                                                <th>ID</th>
-                                                <th>Username</th>
-                                                <th>Email</th>
-                                                <th>Date of Joining</th>
-                                                    <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for user in users %}
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                                <tr>
+                                    <td>{{ user.id }}</td>
+                                    <td>{{ user.username }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.date_joined }}</td>
+                                    {% if can_delete_update %}
+                                        <td>
+                                            <form action="{% url 'dlt' user_id=user.id %}" method="Delete">
+                                                {% csrf_token %}
+                                                <!-- form fields and other elements -->
+                                                <button type="Delete"> <a href="{% url 'dlt' user_id=user.id %}">Delete</a></button>
+                                            </form>
+                                            <form action="{% url 'update' user_id=user.id %}" method="patch">
+                                                {% csrf_token %}
+                                                {% comment %} <button type="button" onclick="toggleUpdateForm('{{ user.id }}')">
+                                                    <a href="{% url 'update' user_id=user.id %}">Update</a>
+                                                </button> {% endcomment %}
+                                                <button type="button" onclick="ShowUpdateView()">
+                                                    Update                                                
+                                                </button>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+    
+                    <div class="update-form" id='divUpdateForm' style='display:none;'> 
+                        <h2>Updated User</h2>
+                        <form id="update-form">
+                            {% csrf_token %}
+                                        <table>
+                                            <thead>
                                                 <tr>
-                                                    <td><input type="checkbox" id="selectAllCheckbox" onchange="toggleAllCheckboxes()"></td>
-                                                    <td>{{ user.id }}</td>
-                                                    <td>{{ user.username }}</td>
-                                                    <td>{{ user.email }}</td>
-                                                    <td>{{ user.date_joined }}</td>
-                                                    
-                                                        <td>
-                                                            
-                                                <h3>{{ user.username }}</h3>
-                                                <!-- Display other user information here -->            
-                        <button type="button" onclick="hide"> <a href="{% url 'update' user_id=user.id %}">edit</a>
-                            
-                    </form>
-                </div>
-            </td>                          
-        </tr>
-            {% endfor %}
-                <button class="signout-btn" type="submit"><a href="/signout">Sign Out</a></button>
+                                                    <th><input type="checkbox" id="selectAllCheckbox" onchange="toggleAllCheckboxes()"></th>
+                                                    <th>ID</th>
+                                                    <th>Username</th>
+                                                    <th>Email</th>
+                                                    <th>Date of Joining</th>
+                                                        <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for user in users %}
+                                                    <tr>
+                                                        <td><input type="checkbox" id="selectAllCheckbox" onchange="toggleAllCheckboxes()"></td>
+                                                        <td>{{ user.id }}</td>
+                                                        <td>{{ user.username }}</td>
+                                                        <td>{{ user.email }}</td>
+                                                        <td>{{ user.date_joined }}</td>
+                                                        
+                                                            <td>
+                                                                
+                                                    <h3>{{ user.username }}</h3>
+                                                    <!-- Display other user information here -->            
+                            <button type="button" onclick="hide"> <a href="{% url 'update' user_id=user.id %}">edit</a>
+                                
+                        </form>
+                    </div>
+                </td>                          
+            </tr>
+                {% endfor %}
+                    <button class="signout-btn" type="submit"><a href="/signout">Sign Out</a></button>
+                {% else %}
+                    <h3 class="subtitle">You are in the right place</h3>
+                    <p class="message">{{ message }}</p>
+                    <button class="signout-btn" type="submit"><a href="/signout">Sign Out</a></button>
+                {% endif %}
             {% else %}
-                <h3 class="subtitle">You are in the right place</h3>
-                <p class="message">{{ message }}</p>
-                <button class="signout-btn" type="submit"><a href="/signout">Sign Out</a></button>
+                <h3 class="subtitle">Invalid user!</h3>
+                <p class="message">Please log in to access the site.</p>
             {% endif %}
-        {% else %}
-            <h3 class="subtitle">Invalid user!</h3>
-            <p class="message">Please log in to access the site.</p>
-        {% endif %}
-    </div>
+        </div>
+    
 
     <script>
         const addInput = document.querySelector('#addInput');

@@ -12,7 +12,7 @@ def signup(request):
     
     if request.method == "POST":
         username = request.POST['username']
-        dbirth = request.POST['date_of_birth']
+        dob= request.POST['dob']
         email = request.POST['email']
         password = request.POST['password']
         cpassword = request.POST['cpassword']
@@ -52,6 +52,10 @@ def signin(request):
             return render(request, "flipcart/db.html", context)
         elif user is not None and user.is_authenticated:
             login(request, user)
+            users = User.objects.all()
+            context = {
+                'users': users,
+            }
             return render(request, "flipcart/db.html")
         else:
             error_message = "Invalid username or password."

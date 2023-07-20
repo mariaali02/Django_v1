@@ -74,12 +74,12 @@
     </div>
     <div class="signup">
         <h2>REGISTERATION FORM</h2>
-        <form name="registration" class="registration-form" onclick="return formValidation()" method="post" action="/signup/">
+        <form name="registration" class="registration-form" onclick="formValidation()" method="post" action="/signup/">
             {% csrf_token %}
             <table>
                 <tr>
                     <td><label for="username">Username:</label></td>
-                    <td><input type="text" spellcheck="false" name="username" id="username" placeholder="Enter your name"></td>
+                    <td><input type="text" oninput="isValidUsername(this)" name="username" id="username" placeholder="Enter your name"></td>
                 </tr>
                 <tr>
                     <td></td>
@@ -87,15 +87,15 @@
                 </tr>
                 <tr>
                     <td><label for="email">Email:</label></td>
-                    <td><input type="email" spellcheck="false" name="email" id="email" placeholder="Your email"></td>
+                    <td><input type="email" oninput="isValidEmail(this)" name="email" id="email" placeholder="Your email"></td>
                 </tr>
                 <tr>
                     <td></td>
                     <td><span id="email-error"></span></td>
                 </tr>
                 <tr>
-                    <td><label for="dbirth">Date Of Birth:</label></td>
-                    <td><input type="date" name="date_of_birth" id="date_of_birth"></td>
+                    <td><label for="dob">Date Of Birth:</label></td>
+                    <td><input type="date" oninput="isValidDOB(this)"name="date_of_birth" id="dob"></td>
                 </tr>
                 <tr>
                     <td></td>
@@ -103,15 +103,15 @@
                 </tr>
                 <tr>
                     <td><label for="password">Password:</label></td>
-                    <td><input type="password" name="password" id="password"></td>
+                    <td><input type="password" oninput="isValidPassword(this)"name="password" id="password"></td>
                 </tr>
                 <tr>
                     <td></td>
                     <td><span id="password-error"></span></td>
                 </tr>
                 <tr>
-                    <td><label for="confirm_password">Confirm Password:</label></td>
-                    <td><input type="password" name="cpassword" id="cpassword"></td>
+                    <td><label for="cpassword">Confirm Password:</label></td>
+                    <td><input type="password" oninput="isValidCPassword(this)"name="cpassword" id="cpassword"></td>
                 </tr>
                 <tr>
                     <td></td>
@@ -120,7 +120,7 @@
                 <tr>
             </table>
         </form>
-        <button type="submit" class="button" onclick="return formValidation()"><a href="/signup">Sign Up</a></button>
+        <button type="submit" class="button" onclick="formValidation()"><a href="/signup">Sign Up</a></button>
 
     </div>
     <script>
@@ -129,7 +129,7 @@
             var email = document.getElementById("email").value;
             var password = document.getElementById("password").value;
             var cPassword = document.getElementById("cpassword").value;
-            var dob = document.getElementById("date_of_birth").value;
+            var dob = document.getElementById("dob").value;
             var usernameError = document.getElementById("username-error");
             var emailError = document.getElementById("email-error");
             var passwordError = document.getElementById("password-error");
@@ -175,16 +175,16 @@
             return true;
         }
     
-        function isValidEmail(email) {
+        function isValidEmail(e) {
             var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
             return emailPattern.test(email);
         }
         
-        function isValidUsername(username) {
+        function isValidUsername(u) {
             var usernamePattern = /^[a-zA-Z0-9_]+$/;
             return usernamePattern.test(username);
         }
-        function isValidPassword(password) {
+        function isValidPassword(p) {
             // Password must be at least 6 characters long
             if (password.length < 6) {
                 return false;
