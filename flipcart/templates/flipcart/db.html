@@ -59,6 +59,12 @@
         }
 
         h1 {
+            color: white;
+            text-align: center;
+            font-weight: bold;
+        } 
+        h3 {
+            color: white;
             text-align: center;
             font-weight: bold;
         } 
@@ -95,7 +101,7 @@
     
             {% if user.is_authenticated %}
                     <h1>Dashboard</h1>
-                    <h3>User name: {{ user.username }}</h3>
+                    <h3>ACTIVE USER: {{ user.username }}</h3>
     
                     <table>
                         <thead>

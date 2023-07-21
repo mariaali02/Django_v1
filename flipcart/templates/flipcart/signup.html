@@ -51,21 +51,23 @@
 
         .error {
             color: red;
+            margin:0px;
+            text-align:center;
         }  
-    .button {
-        background-color: white;
-        padding: 5px 10px;
-        border: none;
-        border-radius: 5px;
-        text-decoration: none;
-        font-size: 15px;
-        color: black;
-        
-    }
+        .button {
+            background-color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 15px;
+            color: black;
+            
+        }
 
-    .button:hover {
-        background-color: green;
-    }
+        .button:hover {
+            background-color: green;
+        }
 
     </style>
 <body>
@@ -74,55 +76,55 @@
     </div>
     <div class="signup">
         <h2>REGISTERATION FORM</h2>
-        <form name="registration" class="registration-form" onclick="formValidation()" method="post" action="/signup/">
-            {% csrf_token %}
+        <form name="registration" class="registartion-form"  method="post" action="/signup/">         
+                {% csrf_token %}
             <table>
                 <tr>
                     <td><label for="username">Username:</label></td>
-                    <td><input type="text" oninput="isValidUsername(this)" name="username" id="username" placeholder="Enter your name"></td>
+                    <td><input type="text" oninput= name="username" id="username" placeholder="Enter your name"></td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td><span id="username-error"></span></td>
+                    <td><span id="username-error"class="error"></span></td>
                 </tr>
                 <tr>
                     <td><label for="email">Email:</label></td>
-                    <td><input type="email" oninput="isValidEmail(this)" name="email" id="email" placeholder="Your email"></td>
+                    <td><input type="email" name="email" id="email" placeholder="Your email"></td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td><span id="email-error"></span></td>
+                    <td><span id="email-error" class="error"></span></td>
                 </tr>
                 <tr>
                     <td><label for="dob">Date Of Birth:</label></td>
-                    <td><input type="date" oninput="isValidDOB(this)"name="date_of_birth" id="dob"></td>
+                    <td><input type="date" name="dob" id="dob"></td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td><span id="dob-error"></span></td>
+                    <td><span id="dob-error"class="error"></span></td>
                 </tr>
                 <tr>
                     <td><label for="password">Password:</label></td>
-                    <td><input type="password" oninput="isValidPassword(this)"name="password" id="password"></td>
+                    <td><input type="password" name="password" id="password"></td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td><span id="password-error"></span></td>
+                    <td><span id="password-error"class="error"></span></td>
                 </tr>
                 <tr>
                     <td><label for="cpassword">Confirm Password:</label></td>
-                    <td><input type="password" oninput="isValidCPassword(this)"name="cpassword" id="cpassword"></td>
+                    <td><input type="password"name="cpassword" id="cpassword"></td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td><span id="cpassword-error"></span></td>
+                    <td><span id="cpassword-error"class="error"></span></td>
                 </tr>
                 <tr>
             </table>
-        </form>
-        <button type="submit" class="button" onclick="formValidation()"><a href="/signup">Sign Up</a></button>
-
-    </div>
+            <input type="submit" class="submit" onclick="return formValidation()" value="Register" />
+    </form>
+    <a href="{% url 'signup' %}">
+    </a>
     <script>
         function formValidation() {
             var username = document.getElementById("username").value;
@@ -135,82 +137,47 @@
             var passwordError = document.getElementById("password-error");
             var cpasswordError = document.getElementById("cpassword-error");
             var dobError = document.getElementById("dob-error");
-        
+    
             usernameError.innerHTML = "";
             emailError.innerHTML = "";
             passwordError.innerHTML = "";
             cpasswordError.innerHTML = "";
             dobError.innerHTML = "";
-        
-            if (username.trim() === "") {
-                usernameError.innerHTML = "Please enter your username.";
-                return false;
-            }
-        
-            if (!isValidEmail(email)) {
-                emailError.innerHTML = "Please enter a valid email address.";
-                return false;
-            }
-        
-            if (!isValidUsername(username)) {
-                usernameError.innerHTML = "Username should only contain letters, numbers, and underscore.";
-                return false;
-            }
-        
-            if (!isValidPassword(password)) {
-                passwordError.innerHTML = "Password must be 6 characters long and contain numbers and a special character.";
-                return false;
-            }
-        
-            if (!isValidCPassword(password, cPassword)) {
-                confirmPasswordError.innerHTML = "Passwords do not match.";
-                return false;
-            }
-        
-            if (!isValidDOB(dob)) {
-                dobError.innerHTML = "Please enter a valid date of birth.";
-                return false;
-            }
-        
-            return true;
-        }
     
-        function isValidEmail(e) {
-            var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-            return emailPattern.test(email);
+
+        var usernamePattern = /^[a-zA-Z0-9_]+$/;
+        if (!username.match(usernamePattern)) {
+            usernameError.innerHTML = "INVALID";
+            return false; // Prevent form submission if the username is invalid
         }
-        
-        function isValidUsername(u) {
-            var usernamePattern = /^[a-zA-Z0-9_]+$/;
-            return usernamePattern.test(username);
+
+        var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        if (!email.match(emailPattern)) {
+            emailError.innerHTML = "Please enter a valid email.";
+            return false;
         }
-        function isValidPassword(p) {
-            // Password must be at least 6 characters long
-            if (password.length < 6) {
-                return false;
-            }
-            
-            // Password must contain at least one special character
-            if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-                return false;
-            }
-            
-            return true;
+
+        var passwordPattern = /^(?=.*[a-zA-Z])(?=.*[\d@$!%*?&])[A-Za-z\d@$!%*?&]{6,8}$/;
+        if (!password.match(passwordPattern)) {
+            passwordError.innerHTML = "Invalid password";
+            return false;
         }
-    
-        function isValidCPassword(password, cPassword) {
-            return password === cPassword;
+
+        if (!cPassword.match(password)) {
+            cpasswordError.innerHTML = "Invalid password";
+            return false;
         }
-    
-        function isValidDOB(dob) {
-            var currentDate = new Date();
-            var selectedDate = new Date(dob);
-        
-            return selectedDate < currentDate;
+
+        var currentDate = new Date();
+        var selectedDate = new Date(dob);
+        if (currentDate.toDateString() <= selectedDate.toDateString()) {
+            dobError.innerHTML = "Invalid date of birth";
+            return false;
         }
-        
-    </script>
-    
+
+        return true;
+    }
+</script>
 </head>
 </body>
 </html>
