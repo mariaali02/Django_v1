@@ -151,13 +151,13 @@
             return false; // Prevent form submission if the username is invalid
         }
 
-        var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]$/;
         if (!email.match(emailPattern)) {
             emailError.innerHTML = "Please enter a valid email.";
             return false;
         }
 
-        var passwordPattern = /^(?=.*[a-zA-Z])(?=.*[\d@$!%*?&])[A-Za-z\d@$!%*?&]{6,8}$/;
+        var passwordPattern = /{6,8}/;
         if (!password.match(passwordPattern)) {
             passwordError.innerHTML = "Invalid password";
             return false;

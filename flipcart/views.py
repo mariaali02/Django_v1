@@ -2,8 +2,12 @@ from django.shortcuts import redirect, render,HttpResponse
 from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.contrib.admin.views.decorators import staff_member_required
+from rest_framework import generics
+from rest_framework.response import Response
+from .models import User
+from .serializers import UserSerializer
+
 
 def home(request):
     return render(request, "flipcart/home.html")
@@ -27,7 +31,7 @@ def signup(request):
                 return HttpResponse("Email is already registered. Please use a different email.")
 
             # Create a new user
-            myuser = User.objects.create_user(username, email, password,)
+            myuser = User.objects.create_user(username, email, password,dob)
             # Save the user
             myuser.save()
 
@@ -186,3 +190,10 @@ def update(request, user_id):
     return render(request, "flipcart/db.html", {'users': users})
 
 
+class UserListView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
