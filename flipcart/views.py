@@ -3,10 +3,8 @@ from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
-from rest_framework import generics
-from rest_framework.response import Response
 from .models import User
-from .serializers import UserSerializer
+from django.views.decorators.csrf import csrf_protect
 
 
 def home(request):
@@ -31,7 +29,7 @@ def signup(request):
                 return HttpResponse("Email is already registered. Please use a different email.")
 
             # Create a new user
-            myuser = User.objects.create_user(username, email, password,dob)
+            myuser = User.objects.create_user(username, email, password)
             # Save the user
             myuser.save()
 
@@ -39,7 +37,7 @@ def signup(request):
             return redirect('msg')
 
     return render(request, "flipcart/signup.html")
-
+@csrf_protect
 def signin(request):
     if request.method == "POST":
         username = request.POST.get('username')
@@ -53,26 +51,35 @@ def signin(request):
                 'users': users,
                 'can_delete_update': True,  # Set a flag to indicate the superuser can delete and update
             }
-            return render(request, "flipcart/db.html", context)
+            return redirect('superuser_dashboar')
         elif user is not None and user.is_authenticated:
             login(request, user)
             users = User.objects.all()
             context = {
                 'users': users,
             }
-            return render(request, "flipcart/db.html")
+            return redirect('user_dashboar')
         else:
             error_message = "Invalid username or password."
             return render(request, "flipcart/invalid.html", {'error_message': error_message})
 
     return render(request, "flipcart/signin.html")
-
-
+def change_password(request):
+    if request.method == 'POST':
+        user = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your password has been changed successfully.')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = PasswordChangeForm(user=request.user)
+    return render(request, 'flipcart/changepassword.html', {'form': form})
 
 @login_required(login_url="/signin")
 def page1(request):   
     return render(request, "flipcart/hello.html")
-def hello_world(request):
+def user_dashboar(request):
     users = User.objects.all()
 
     context = {
@@ -80,8 +87,15 @@ def hello_world(request):
 
     }
 
+    return render(request, 'flipcart/db.html', context)
+def superuser_dashboar(request):
+    users = User.objects.all()
 
+    context = {
+        'users': users,
+        'can_delete_update': True,  # Set a flag to indicate the superuser can delete and update
 
+    }
 
     return render(request, 'flipcart/db.html', context)
 
@@ -189,11 +203,3 @@ def update(request, user_id):
     users = User.objects.all()
     return render(request, "flipcart/db.html", {'users': users})
 
-
-class UserListView(generics.ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer

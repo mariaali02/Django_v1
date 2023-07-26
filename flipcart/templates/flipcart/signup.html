@@ -76,12 +76,12 @@
     </div>
     <div class="signup">
         <h2>REGISTERATION FORM</h2>
-        <form name="registration" class="registartion-form"  method="post" action="/signup/">         
+        <form name="registration" class="registartion-form" method="post" action="/signup/">         
                 {% csrf_token %}
             <table>
                 <tr>
                     <td><label for="username">Username:</label></td>
-                    <td><input type="text" oninput= name="username" id="username" placeholder="Enter your name"></td>
+                    <td><input type="text" name="username" id="username" placeholder="Enter your name"></td>
                 </tr>
                 <tr>
                     <td></td>
@@ -144,40 +144,41 @@
             cpasswordError.innerHTML = "";
             dobError.innerHTML = "";
     
-
-        var usernamePattern = /^[a-zA-Z0-9_]+$/;
-        if (!username.match(usernamePattern)) {
-            usernameError.innerHTML = "INVALID";
-            return false; // Prevent form submission if the username is invalid
+            var usernamePattern = /^[a-zA-Z0-9_]+$/;
+            if (!username.match(usernamePattern)) {
+                usernameError.innerHTML = "INVALID";
+                return false; // Prevent form submission if the username is invalid
+            }
+    
+            var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            if (!email.match(emailPattern)) {
+                emailError.innerHTML = "Please enter a valid email.";
+                return false;
+            }
+    
+            var passwordPattern = /^(?=.*[a-zA-Z])(?=.*[\d@$!%*?&])[A-Za-z\d@$!%*?&]{6,8}$/;
+            if (!password.match(passwordPattern)) {
+                passwordError.innerHTML = "Invalid password";
+                return false;
+            }
+    
+            if (cPassword !== password) {
+                cpasswordError.innerHTML = "Passwords do not match";
+                return false;
+            }
+    
+            var currentDate = new Date();
+            var selectedDate = new Date(dob);
+            if (selectedDate.toDateString() === currentDate.toDateString()) {
+                dobError.innerHTML = "Please select a date other than today";
+                return false;
+            }
+    
+            // If all validations pass, the form can be submitted
+            return true;
         }
-
-        var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]$/;
-        if (!email.match(emailPattern)) {
-            emailError.innerHTML = "Please enter a valid email.";
-            return false;
-        }
-
-        var passwordPattern = /{6,8}/;
-        if (!password.match(passwordPattern)) {
-            passwordError.innerHTML = "Invalid password";
-            return false;
-        }
-
-        if (!cPassword.match(password)) {
-            cpasswordError.innerHTML = "Invalid password";
-            return false;
-        }
-
-        var currentDate = new Date();
-        var selectedDate = new Date(dob);
-        if (currentDate.toDateString() <= selectedDate.toDateString()) {
-            dobError.innerHTML = "Invalid date of birth";
-            return false;
-        }
-
-        return true;
-    }
-</script>
+    </script>
+    
 </head>
 </body>
 </html>
