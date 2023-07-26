@@ -11,10 +11,6 @@ from django.urls import path
 from flipcart import views
 from . views import signin,user_dashboar,signout,home,signup,msg,page1,dlt,update,change_password,superuser_dashboar
 
-router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'groups', views.GroupViewSet)
-
 urlpatterns = [
     # Other URL patterns
     path('', views.home, name='home'),

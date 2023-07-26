@@ -3,8 +3,7 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
 from.serializers import UserSerializer, GroupSerializer
-from django.contrib.auth.forms import PasswordChangeForm
-from ..API.serializers import UserSerializer
+from ..apitest.serializers import UserSerializer
 # Create your views here.
 
 class UserViewSet(viewsets.ModelViewSet):

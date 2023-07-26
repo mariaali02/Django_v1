@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'flipcart',
     'rest_framework',
-    'API',
+    'apitest',
     
 ]
 
