@@ -4,7 +4,6 @@ from . import views
 urlpatterns = [
     path('', views.home)
 ]"""
-from rest_framework import routers
 from django.urls import path, include
 from django.contrib import admin
 from django.urls import path

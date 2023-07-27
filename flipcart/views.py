@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
-from .models import User
+from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views.decorators.csrf import csrf_protect
 
@@ -31,6 +31,7 @@ def signup(request):
 
             # Create a new user
             myuser = User.objects.create_user(username, email, password)
+            
             # Save the user
             myuser.save()
 
@@ -158,7 +159,7 @@ def dlt(request,user_id):
         user = User.objects.get(id=user_id)
         user.delete()
         messages.success(request, "The user is deleted.")
-        return render(request, "flipcart/db.html")
+        return redirect('superuser_dashboar')
     except User.DoesNotExist:
         messages.error(request, "The user does not exist.")
     return render(request, "flipcart/db.html")

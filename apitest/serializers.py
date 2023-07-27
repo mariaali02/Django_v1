@@ -1,14 +1,8 @@
-from django.contrib.auth.models import User, Group
+# apitest/api/serializers.py
 from rest_framework import serializers
+from django.contrib.auth.models import User
 
-
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'groups']
-
-
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Group
-        fields = ['url', 'name']
+        fields = ['id', 'username', 'email', 'date_joined']
