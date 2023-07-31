@@ -7,6 +7,7 @@
     <meta name="" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <style>
         body {
             background-color: black;
@@ -261,9 +262,9 @@
                         </form>
                     </div>
                                         </form>
-                                        <form action="{% url 'update' user_id=user.id %}" method="patch">
+                                        <form action="{% url 'edit' user_id=user.id %}" method="patch">
                                             {% csrf_token %}
-                                            <button type="button" onclick="ShowUpdateView()">Update</button>
+                                            <button type="button" onclick=" return ShowUpdateView()">Edit</button>
                                         </form>
                                     </td>
                                 {% endif %}
@@ -276,31 +277,34 @@
                     <h2>Updated User</h2>
                     <form id="update-form">
                         {% csrf_token %}
+
                         <table>
-                            <thead>
-                                <tr>
-                                    <th><input type="checkbox" id="selectAllCheckbox" onchange="toggleAllCheckboxes()"></th>
-                                    <th>ID</th>
-                                    <th>Username</th>
-                                    <th>Email</th>
-                                    <th>Date of Joining</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
                             <tbody>
-                                {% for user in users %}
-                                    <tr>
-                                        <td><input type="checkbox" id="selectAllCheckbox" onchange="toggleAllCheckboxes()"></td>
-                                        <td>{{ user.id }}</td>
-                                        <td>{{ user.username }}</td>
-                                        <td>{{ user.email }}</td>
-                                        <td>{{ user.date_joined }}</td>
-                                        <td>
-                                            <h3>{{ user.username }}</h3>
-                                            <button type="button" onclick="hide"> <a href="{% url 'update' user_id=user.id %}">edit</a></button>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
+                                <tr>
+                                    <td>ID</td>
+                                    <td><input type="number" id="lblUserId" /></td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td>UserName</td>
+                                    <td><input type="text" name="username" id="txtUserName" placeholder="Enter your name"></td>
+                                </tr>
+                                <tr>
+                                    <td>Email</td>
+                                    <td><input type="email" name="email" id="txtEmail" placeholder="Your email"></td>
+                                </tr>
+                                <tr>
+                                    <td>Dob</td>
+                                    <td><input type="email" name="email" id="email" placeholder="Your email"></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <form action="{% url 'update' user_id=user.id %}" method="patch">
+                                            {% csrf_token %}
+                                    <button type="button" onclick="return getdata()"> Update</button>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </form>
@@ -348,8 +352,31 @@
         const addInput = document.querySelector('#addInput');
         const addBtn = document.querySelector('#addBtn');
 
+        function getdata(userId){
+            var baseUrl = "http://127.0.0.1:8000/apitest/users/"
+            $.ajax({
+                method: 'Get',
+                //url: '/apitest/users',
+                url: '/apitest/userdetail',
+                dataType: "json",
+                data: {"userId": 27},
+                error: function (xhr, errmsg, err){
+                    console.log('hi eror')
+                },
+                complete: function(xhr, errmsg, err){
+                    $('input#txtUserName').val(xhr.responseJSON[0]["username"])
+                    $('input#txtEmail').val(xhr.responseJSON[0]["email"])
+                    $('input#lblUserId').val(xhr.responseJSON[0]["id"])
+                    
+                    console.log('hi complete')
+                },
+                success:  function(xhr, errmsg, err){},
+            })
+        }
+
         function ShowUpdateView() {
             document.getElementById('divUpdateForm').style.display = 'block';
+            getdata();
         }
 
         function addLists() {
@@ -386,14 +413,10 @@
                 window.onclick = function(event) {
                         if (event.target == modal) {
                         modal.style.display = "none";
-        function getdata(){
-            var baseUrl = "http://127.0.0.1:8000/apitest/users/"
-            $.get( baseUrl,function(data, status){
-                alert("Data: " + data + "\nStatus: " + status);
-            })
-        }
+
 }
 }
+
     </script>
 </body>
 </html>

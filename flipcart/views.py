@@ -165,22 +165,17 @@ def dlt(request,user_id):
     return render(request, "flipcart/db.html")
 
 
-def edit(request):
+def edit(request,user_id):
     user = request.user
 
-    if request.method == 'POST':
-        form= User.UpdateForm(request.POST, instance=user)
-        if user.is_valid():
-            form.save()
-            messages.success(request, 'Your information has been updated successfully.')
-            return redirect('dashboard')
-    else:
-        form= User.UpdateForm(instance=user)
-
-    context = {
-        'form': form,
-        'user': user
-    }
+    try:
+        user = User.objects.get(id=user_id)
+        user.edit()
+        messages.success(request, "The user is deleted.")
+        return redirect('superuser_dashboar')
+    except User.DoesNotExist:
+        messages.error(request, "The user does not exist.")
+    return render(request, "flipcart/db.html")
     
 @login_required
 def update(request, user_id):
