@@ -359,7 +359,7 @@
                 //url: '/apitest/users',
                 url: '/apitest/userdetail',
                 dataType: "json",
-                data: {"userId": 27},
+                data: {"userId": userId},
                 error: function (xhr, errmsg, err){
                     console.log('hi eror')
                 },
@@ -372,6 +372,29 @@
                 },
                 success:  function(xhr, errmsg, err){},
             })
+        }
+        function updateUser(userId, email) {
+            var baseUrl = "http://127.0.0.1:8000/apitest/userdetail/";
+            var Url = baseUrl + "?userId=" + userId;
+
+            var requestData = {
+                "userId": 33 ,
+                "email": 
+            };
+
+            $.ajax({
+                url: apiUrl,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(requestData),
+                dataType: 'json',
+                success: function(response) {
+                    console.log('User data updated successfully:', response);
+                },
+                error: function(xhr, errmsg, err) {
+                    console.log('Error updating user:', xhr.responseJSON);
+                }
+            });
         }
 
         function ShowUpdateView() {
