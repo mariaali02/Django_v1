@@ -20,7 +20,7 @@ class UserDetail1(APIView):
     permission_classes = [permissions.AllowAny]
     
     def get(self, request, format=None):
-        
+
         userId = request.GET['userId']
         userId = int(userId)
         if userId:
@@ -28,14 +28,14 @@ class UserDetail1(APIView):
         else:
             queryset = User.objects.all()
         serializer = UserSerializer(queryset, many=True)
-        
+
         return Response(serializer.data)
 
     def put(self, request, format=None):        
         userId = int(request.query_params['userId']) if request.query_params['userId'] else None
         dicUser = {}
         dicUser["email"] = request.data['email']
-        #dicUser["username"] = request.data['username']
+        dicUser["username"] = request.data['username']
         try:
             if userId:
                 objUser = User.objects.filter(pk=userId)
