@@ -209,6 +209,10 @@
                 width: 30%;
             }
         }
+        /* ... Your existing CSS code ... */
+
+        /* ... Your existing CSS code ... */
+
     </style>
 </head>
 <body>
@@ -264,7 +268,7 @@
                                         </form>
                                         <form action="{% url 'edit' user_id=user.id %}" method="patch">
                                             {% csrf_token %}
-                                            <button type="button" onclick=" return ShowUpdateView()">Edit</button>
+                                            <button type="button" onclick=" return ShowUpdateView({{user.id}})">Edit</button>
                                         </form>
                                     </td>
                                 {% endif %}
@@ -277,39 +281,41 @@
                     <h2>Updated User</h2>
                     <form id="update-form">
                         {% csrf_token %}
-
+                
                         <table>
                             <tbody>
                                 <tr>
                                     <td>ID</td>
-                                    <td><input type="number" id="lblUserId" /></td>
-                                    
+                                    <td><input type="number" id="lblUserId" /></td> 
                                 </tr>
                                 <tr>
                                     <td>UserName</td>
-                                    <td><input type="text" name="username" id="txtUserName" placeholder="Enter your name"></td>
+                                    <td><input type="text" name="username" id="txtUserName" placeholder="Enter your name"></td>  
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><span id="username-error"class="error"></span></td>
                                 </tr>
                                 <tr>
                                     <td>Email</td>
                                     <td><input type="email" name="email" id="txtEmail" placeholder="Your email"></td>
                                 </tr>
                                 <tr>
-                                    <td>Dob</td>
-                                    <td><input type="email" name="email" id="email" placeholder="Your email"></td>
+                                    <td></td>
+                                    <td><span id="email-error" class="error"></span></td>
                                 </tr>
                                 <tr>
-                                    <td></td>
-                                    <td>
-                                        <form action="{% url 'update' user_id=user.id %}" method="patch">
-                                            {% csrf_token %}
-                                    <button type="button" onclick="return getdata()"> Update</button>
+                                    <td>                     
+                                        <button type="button" id="btnUpdate" onclick="return updateUser()"> Update</button>
+
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </form>
+            
                 </div>
-
+                
                 <button class="signout-btn" type="submit"><a href="/signout">Sign Out</a></button>
             {% else %}
                 <!-- Regular User Dashboard -->
@@ -349,57 +355,115 @@
         {% endif %}
     </div>
     <script>
+
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
         const addInput = document.querySelector('#addInput');
         const addBtn = document.querySelector('#addBtn');
 
         function getdata(userId){
-            var baseUrl = "http://127.0.0.1:8000/apitest/users/"
+            var baseUrl = "http://127.0.0.1:8000/apitest/userdetail/"
             $.ajax({
                 method: 'Get',
                 //url: '/apitest/users',
                 url: '/apitest/userdetail',
                 dataType: "json",
-                data: {"userId": userId},
+                data: {"userId":userId},
                 error: function (xhr, errmsg, err){
                     console.log('hi eror')
                 },
                 complete: function(xhr, errmsg, err){
                     $('input#txtUserName').val(xhr.responseJSON[0]["username"])
                     $('input#txtEmail').val(xhr.responseJSON[0]["email"])
+                    $('input#txtdob').val(xhr.responseJSON[0]["dob"])
                     $('input#lblUserId').val(xhr.responseJSON[0]["id"])
-                    
-                    console.log('hi complete')
+                    //$('button#btnUpdate').on("click", function(){alert(xhr.responseJSON[0]["id"])})
+                    //$('button#btnUpdate').on("click", updateUser(xhr.responseJSON[0]["id"]))
+
+                    //console.log('hi complete')
                 },
                 success:  function(xhr, errmsg, err){},
             })
         }
-        function updateUser(userId, email) {
-            var baseUrl = "http://127.0.0.1:8000/apitest/userdetail/";
-            var Url = baseUrl + "?userId=" + userId;
+        function updateUser() {
+            var csrftokenget = getCookie('csrftoken');
+            formValidation();
 
-            var requestData = {
-                "userId": 33 ,
-                "email": 
-            };
+                $.ajaxSetup({
+                    beforeSend: function (xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftokenget);
+                    }
+                });
+            
+            var baseUrl = "http://127.0.0.1:8000/apitest/userdetail"; // Base URL of your Django API
+            var userId = $('input#lblUserId').val()
+            var email = $('input#txtEmail').val()
+            var username = $('input#txtUserName').val()
+            var Url = baseUrl + `?userId=${userId}` ;
 
             $.ajax({
-                url: apiUrl,
-                type: 'PUT',
-                contentType: 'application/json',
-                data: JSON.stringify(requestData),
+                method: 'PUT',
+                url: Url, // Use the 'Url' variable containing the complete URL
+                dataType: 'application/json',
+                data:{'email' : email,
+                'username':username
+            },
                 dataType: 'json',
-                success: function(response) {
-                    console.log('User data updated successfully:', response);
-                },
                 error: function(xhr, errmsg, err) {
                     console.log('Error updating user:', xhr.responseJSON);
-                }
-            });
-        }
+                },
+                complete: function(xhr, errmsg, err){
+                /* $('input#txtUserName').val(xhr.responseJSON[0]["username"])
+                    $('input#txtEmail').val(xhr.responseJSON[0]["email"])
+                    $('input#lblUserId').val(xhr.responseJSON[0]["id"])
+                    $('input#txtdob').val(xhr.responseJSON[0]["dob"])*/
+                
+                    alert('User updated successfully!');
+                },
+                success:  function(xhr, errmsg, err){},
+                
+            })
+        } 
+        function formValidation() {
+            var username = document.getElementById("txtUserName").value;
+            var email = document.getElementById("txtEmail").value;
+            var usernameError = document.getElementById("username-error");
+            var emailError = document.getElementById("email-error");
 
-        function ShowUpdateView() {
+            usernameError.innerHTML = "";
+            emailError.innerHTML = "";
+
+            var usernamePattern = /^[a-zA-Z0-9_]+$/;
+            if (!username.match(usernamePattern)) {
+                usernameError.innerHTML = "INVALID";
+                return false; // Prevent form submission if the username is invalid
+            }
+    
+            var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            if (!email.match(emailPattern)) {
+                emailError.innerHTML = "Please enter a valid email.";
+                return false;
+            }
+            return true;
+        } 
+        function ShowUpdateView(userId) {
             document.getElementById('divUpdateForm').style.display = 'block';
-            getdata();
+            getdata(userId);
+            
         }
 
         function addLists() {
@@ -420,7 +484,7 @@
             const userCheckboxes = document.querySelectorAll('input[name="userCheckbox"]');
 
             if (!checkbox.checked) {
-                selectAllCheckbox.checked = false;
+                selectAllCheckbox.checked = false;userId
             } else {
                 const allChecked = Array.from(userCheckboxes).every(function (checkbox) {
                     return checkbox.checked;
@@ -439,6 +503,9 @@
 
 }
 }
+    
+
+
 
     </script>
 </body>
