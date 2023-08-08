@@ -19,10 +19,22 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
 class UserDetail1(APIView):
     permission_classes = [permissions.AllowAny]
     
-    def get(self, request, format=None):
+    """def get(self, request, format=None):
 
         userId = request.GET['userId']
         userId = int(userId)
+        if userId:
+            queryset = User.objects.filter(pk=userId)
+        else:
+            queryset = User.objects.all()
+        serializer = UserSerializer(queryset, many=True)
+
+        return Response(serializer.data)"""
+        
+    def get(self, request, format=None):
+        
+        userId = int(request.GET['userId']) if 'userId' in request.GET else None
+
         if userId:
             queryset = User.objects.filter(pk=userId)
         else:

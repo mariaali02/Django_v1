@@ -8,6 +8,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script type= "text/javascript" > 
+
+
+
+    function getalldata() {
+    alert("get data ");
+    var baseUrl = "http://127.0.0.1:8000/apitest/userdetail";
+    $.ajax({
+        method: 'GET',
+        url: baseUrl,
+        dataType: "json",
+        data: { },
+        error: function (xhr, errmsg, err) {
+            console.log('Error:', err);
+        },
+        complete: function (xhr, errmsg, err) {
+    
+            console.log('JSON Data:', xhr.responseJSON);
+        },
+        success: function (xhr, errmsg, err) {
+            console.log('Success:', xhr);
+            for (i=0; i < xhr.length; i++){
+                $('tbody#tblmydata').append(
+                `<tr>
+                    <td>${xhr[i].id }</td>
+                    <td>${ xhr[i].username }</td>
+                    <td>${ xhr[i].email }</td>
+                    <td> ${ xhr[i].date_joined }</td>
+                </tr>`)
+            }
+        },
+    });
+}
+
+function removedata() {
+    alert('empty');
+    $('tbody#tblmydata').empty()
+}
+                        
+    </script>
     <style>
         body {
             background-color: black;
@@ -226,7 +266,23 @@
                 <!-- Superuser Dashboard -->
                 <h1>Superuser Dashboard</h1>
                 <h3>ACTIVE USER: {{ user.username }}</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Date of Joining</th>
+                            {% if can_delete_update %}
+                                <th>Actions</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody id = "tblmydata">
 
+
+                    </tbody>
+                    </table>
                 <table>
                     <thead>
                         <tr>
@@ -261,7 +317,7 @@
                                 <div class="clearfix">
                                 <button type="button" onclick="document.getElementById('dlt').style.display='none'" class="cancelbtn">Cancel</button>
                                 <button type="Delete"onclick="document.getElementById('dlt').style.display='none'"class="deletebtn"><a href="{% url 'dlt' user_id=user.id %}">Delete</a></button>
-                                </div>
+                            </div>
                             </div>
                         </form>
                     </div>
@@ -269,6 +325,8 @@
                                         <form action="{% url 'edit' user_id=user.id %}" method="patch">
                                             {% csrf_token %}
                                             <button type="button" onclick=" return ShowUpdateView({{user.id}})">Edit</button>
+                                            <button type="button" onclick="removedata()">Remove</button>
+                
                                         </form>
                                     </td>
                                 {% endif %}
@@ -375,30 +433,29 @@
         const addInput = document.querySelector('#addInput');
         const addBtn = document.querySelector('#addBtn');
 
-        function getdata(userId){
-            var baseUrl = "http://127.0.0.1:8000/apitest/userdetail/"
+        function getdata(userId) {
+            var baseUrl = "http://127.0.0.1:8000/apitest/userdetail";
             $.ajax({
-                method: 'Get',
-                //url: '/apitest/users',
-                url: '/apitest/userdetail',
+                method: 'GET',
+                url: baseUrl,
                 dataType: "json",
-                data: {"userId":userId},
-                error: function (xhr, errmsg, err){
-                    console.log('hi eror')
+                data: { "userId": userId },
+                error: function (xhr, errmsg, err) {
+                    console.log('Error:', err);
                 },
-                complete: function(xhr, errmsg, err){
-                    $('input#txtUserName').val(xhr.responseJSON[0]["username"])
-                    $('input#txtEmail').val(xhr.responseJSON[0]["email"])
-                    $('input#txtdob').val(xhr.responseJSON[0]["dob"])
-                    $('input#lblUserId').val(xhr.responseJSON[0]["id"])
-                    //$('button#btnUpdate').on("click", function(){alert(xhr.responseJSON[0]["id"])})
-                    //$('button#btnUpdate').on("click", updateUser(xhr.responseJSON[0]["id"]))
-
-                    //console.log('hi complete')
+                complete: function (xhr, errmsg, err) {
+                    $('input#txtUserName').val(xhr.responseJSON[0]["username"]);
+                    $('input#txtEmail').val(xhr.responseJSON[0]["email"]);
+                    $('input#txtdob').val(xhr.responseJSON[0]["dob"]);
+                    $('input#lblUserId').val(xhr.responseJSON[0]["id"]);
+                    console.log('JSON Data:', xhr.responseJSON);
                 },
-                success:  function(xhr, errmsg, err){},
-            })
+                success: function (xhr, errmsg, err) {
+                    console.log('Success:', xhr);
+                },
+            });
         }
+        
         function updateUser() {
             var csrftokenget = getCookie('csrftoken');
             formValidation();
@@ -503,7 +560,9 @@
 
 }
 }
-    
+    window.onload= function(){
+        getalldata();
+} 
 
 
 
