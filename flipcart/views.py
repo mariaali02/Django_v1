@@ -6,6 +6,9 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+
 
 
 def home(request):
@@ -68,16 +71,15 @@ def signin(request):
     return render(request, "flipcart/signin.html")
 def change_password(request):
     if request.method == 'POST':
-        user = PasswordChangeForm(user=request.user, data=request.POST)
+        form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Your password has been changed successfully.')
-        else:
-            messages.error(request, 'Please correct the errors below.')
+            user = form.save()
+            update_session_auth_hash(request, user)  # Update session with new password hash
+            return redirect('user_dashboar')  # Redirect to the user dashboard
     else:
-        form = PasswordChangeForm(user=request.user)
+        form = PasswordChangeForm(request.user)
+    
     return render(request, 'flipcart/changepassword.html', {'form': form})
-
 @login_required(login_url="/signin")
 def page1(request):   
     return render(request, "flipcart/hello.html")
