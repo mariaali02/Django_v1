@@ -12,41 +12,73 @@
 
 
 
-    function getalldata() {
-    alert("get data ");
-    var baseUrl = "http://127.0.0.1:8000/apitest/userdetail";
-    $.ajax({
-        method: 'GET',
-        url: baseUrl,
-        dataType: "json",
-        data: { },
-        error: function (xhr, errmsg, err) {
-            console.log('Error:', err);
-        },
-        complete: function (xhr, errmsg, err) {
-    
-            console.log('JSON Data:', xhr.responseJSON);
-        },
-        success: function (xhr, errmsg, err) {
-            console.log('Success:', xhr);
-            for (i=0; i < xhr.length; i++){
-                $('tbody#tblmydata').append(
-                `<tr>
-                    <td>${xhr[i].id }</td>
-                    <td>${ xhr[i].username }</td>
-                    <td>${ xhr[i].email }</td>
-                    <td> ${ xhr[i].date_joined }</td>
-                </tr>`)
-            }
-        },
-    });
-}
+        function getalldata() {
+            var baseUrl = "http://127.0.0.1:8000/apitest/userdetail";
+            $.ajax({
+                method: 'GET',
+                url: baseUrl,
+                dataType: "json",
+                data: { },
+                error: function (xhr, errmsg, err) {
+                    console.log('Error:', err);
+                },
+                complete: function (xhr, errmsg, err) {
+            
+                    console.log('JSON Data:', xhr.responseJSON);
+                },
+                success: function (xhr, errmsg, err) {
+                    console.log('Success:', xhr);
+                    $('tbody#tblmydata').children().remove();
+                    for (i=0; i < xhr.length; i++){
+                        $('tbody#tblmydata').append(
+                        `<tr>
+                            <td>${xhr[i].id }</td>
+                            <td>${ xhr[i].username }</td>
+                            <td>${ xhr[i].email }</td>
+                            <td> ${ xhr[i].date_joined }</td>
+                            <td>
+                                <button onclick="deleteUser(${xhr[i].id})">Delete</button>
+                                <button onclick="ShowUpdateView(${xhr[i].id})">Edit</button>
+                                <button type="button" onclick="removedata()">Remove</button>
+                            </td>
+                        </tr>`     
 
-function removedata() {
-    alert('empty');
-    $('tbody#tblmydata').empty()
-}
                         
+                        )
+                    }
+                },
+            });
+        }
+        
+        function removedata() {
+            alert('empty');
+            $('tbody#tblmydata').empty()
+        }
+        function deleteUser(userId) {
+            const csrftoken = getCookie('csrftoken');
+        
+            $.ajaxSetup({
+                beforeSend: function (xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            });
+        
+            var baseUrl = "http://127.0.0.1:8000/apitest/userdetail";
+            var url = `${baseUrl}?userId=${userId}`;
+        
+            $.ajax({
+                method: 'DELETE',
+                url: url,
+                success: function (data) {
+                    console.log(data.message);
+                    getalldata();
+                    // You can perform additional actions here after successful deletion
+                },
+                error: function (xhr, errmsg, err) {
+                    alert('Failed to delete user: ' + xhr.responseJSON.message);
+                }
+            });
+        }                 
     </script>
     <style>
         body {
@@ -280,8 +312,8 @@ function removedata() {
                     </thead>
                     <tbody id = "tblmydata">
 
-
-                    </tbody>
+<!--
+                   </tbody>
                     </table>
                 <table>
                     <thead>
@@ -301,11 +333,11 @@ function removedata() {
                                 <td>{{ user.id }}</td>
                                 <td>{{ user.username }}</td>
                                 <td>{{ user.email }}</td>
-                                <td>{{ user.date_joined }}</td>
-                                {% if can_delete_update %}
+                                <td>{{ user.date_joined }}</td>-->
+                                <!-- {% if can_delete_update %}
                                     <td>
                                         <button onclick="document.getElementById('dlt').style.display='block'">Delete</button>
-
+-->
                                 <div id="dlt" class="modal">
                                 <span onclick="document.getElementById('dlt').style.display='none'" class="close" title="Close Modal">×</span>
                                 <form action="{% url 'dlt' user_id=user.id %}" method="Delete">
@@ -321,18 +353,18 @@ function removedata() {
                             </div>
                         </form>
                     </div>
-                                        </form>
-                                        <form action="{% url 'edit' user_id=user.id %}" method="patch">
+                    </form>
+                                <!-- <form action="{% url 'edit' user_id=user.id %}" method="patch">
                                             {% csrf_token %}
                                             <button type="button" onclick=" return ShowUpdateView({{user.id}})">Edit</button>
                                             <button type="button" onclick="removedata()">Remove</button>
                 
-                                        </form>
-                                    </td>
+                                        </form> 
+                                    </td> 
                                 {% endif %}
                             </tr>
                         {% endfor %}
-                    </tbody>
+                    </tbody>-->
                 </table>
 
                 <div class="update-form" id='divUpdateForm' style='display:none;'> 

@@ -64,7 +64,21 @@ class UserDetail1(APIView):
         except Exception as ex:
             return Response({'message': 'error.'}, status=status.HTTP_400_BAD_REQUEST)
 
+    def delete(self, request, format=None):   
+        if request.method == "DELETE":
+            try:
+                user_id = int(request.GET.get('userId'))
+                objuser = User.objects.get(id=user_id)
+                objuser.delete()
+                return Response({"message": "User deleted successfully"}, status=200)
+            except User.DoesNotExist:
+                return Response({"message": "User not found"}, status=404)
+            except ValueError:
+                return Response({"message": "Invalid user ID"}, status=400)
+        else:
+            return Response({"message": "Invalid request method"}, status=400)
 
+        
 class Hello(APIView):
     permission_classes = [permissions.AllowAny]
     def get(self, request, format=None):
