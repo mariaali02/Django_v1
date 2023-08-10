@@ -1,27 +1,158 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-        <h3>Invalid username or password</h3>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Error - Invalid Username or Password</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        /* Your existing styles here */
 
+        /* Additional styles for the password reset form */
+        #passwordResetForm {
+            margin-top: 20px;
+            display: none;
+            text-align: center;
+        }
+        #passwordResetForm label {
+            display: block;
+            margin-top: 10px;
+        }
+        #passwordResetForm input[type="email"] {
+            padding: 5px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        #passwordResetForm button[type="button"] {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        #passwordResetForm button[type="button"]:hover {
+            background-color: #0056b3;
+        }
+
+        /* Provided styles */
+        body {
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            background-color: green;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
+        .header h1 {
+            font-size: 24px;
+            color: black;
+            padding: 20px;
+        }
+        .registartion-form {
+            text-align: center;
+            border: 2px solid green;
+            border-radius: 5px;
+            padding: 20px;
+        }
+        .registration-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: white;
+        }
+        .error {
+            color: red;
+        }
+        .button {
+            background-color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 15px;
+            color: black;
+        }
+        .button:hover {
+            background-color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3>Invalid Username or Password</h3>
         {% if user.is_authenticated %}
-            <h3>PLEASE SIGHN IN AGAIN OR MAKE SURE YOU ARE ALREADY SIGNUP</h3>
+            <h3>Please Sign In Again or Make Sure You Are Already Signed Up</h3>
             <p>{{ message }}</p>
         {% endif %}
-        <button type="submit"><a href="/signin">Sign In</a></button>
-        <button type="submit"><a href="/signup">Sign up</a></button>
+        <div class="button-group">
+            <button><a href="/signin">Sign In</a></button>
+            <button><a href="/signup">Sign Up</a></button>
+            <button type="button" onclick="requestPasswordReset()">Password Reset</button>
     
-        <script src="" async defer></script>
-    </body>
-</html>
+            <form id="passwordResetForm">
+                <label for="txtEmail">Email:</label>
+                <input type="email" id="txtEmail" name="email" required><br>
+                
+                <button type="button" onclick="requestPasswordReset()">Password Reset</button>
+            </form>
+        </div>
+        </div>
+    </div>
+    <script>
+        function password(){
+        document.getElementById("showPasswordReset").addEventListener("click", function() {
+            document.getElementById("passwordResetForm").style.display = "block";
+        });
+    }
+        function requestPasswordReset() {
+            var email = document.getElementById("txtEmail").value;
+            password();
+            if (email === "") {
+                alert("Email is required.");
+            } else {
+                var baseUrl = "http://127.0.0.1:8000/api/password/reset/"; // Update the URL
+                var requestData = {
+                    email: email,
+                };
+
+                $.ajax({
+                    method: 'POST',
+                    url: baseUrl,
+                    dataType: 'json',
+                    data: requestData,
+                    success: function(data) {
+                        alert("Password reset email sent successfully.");
+                    },
+                    error: function(xhr, status, error) {
+                        alert("Error sending password reset email.");
+                        console.error(error);
+                    }
+                });
+            }
+        }
+    </script>
+    
+
+</body>
+</body>
+
