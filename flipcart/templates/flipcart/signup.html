@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 <head>
     <title>Registration Form</title>
     <style>
@@ -76,8 +78,7 @@
     </div>
     <div class="signup">
         <h2>REGISTERATION FORM</h2>
-        <form name="registration" class="registartion-form" method="post" action="/signup/">         
-                {% csrf_token %}
+        <form id="registrationForm">  
             <table>
                 <tr>
                     <td><label for="username">Username:</label></td>
@@ -121,11 +122,72 @@
                 </tr>
                 <tr>
             </table>
-            <input type="submit" class="submit" onclick="return formValidation()" value="Register" />
+            <input type="submit" class="button" onclick="RegisterUser()" value="Register" />
     </form>
-    <a href="{% url 'signup' %}">
     </a>
     <script>
+        
+    function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+    function RegisterUser() {
+        alert("register");
+        var csrftokenget = getCookie('csrftoken');
+            formValidation();
+
+                $.ajaxSetup({
+                        beforeSend: function (xhr, settings) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftokenget);
+                        }
+                    });
+
+        var baseUrl = "http://127.0.0.1:8000/apitest/register/";
+
+        var formData = {
+            username: $('#username').val(),
+            email: $('#email').val(),
+            password: $('#password').val(),
+            dob: $('#dob').val(),
+            cpassword: $('#cpassword').val(),
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: baseUrl,
+            data: formData,
+            dataType: 'json',
+            success: function (data) {
+                alert('Registration successful!');
+                // Clear form fields or perform any other actions
+            },
+            error: function (xhr, status, error) {
+                var errorMessage = xhr.responseJSON ? xhr.responseJSON.error : 'An error occurred';
+                $('#errorMessage').html('Registration failed: ' + errorMessage);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $('#registrationForm').submit(function (event) {
+            event.preventDefault();
+            RegisterUser();
+        });
+    });
+
+
         function formValidation() {
             var username = document.getElementById("username").value;
             var email = document.getElementById("email").value;

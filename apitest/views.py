@@ -3,16 +3,24 @@ from rest_framework import generics, permissions
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from rest_framework.response import Response
-from .serializers import UserSerializer,ChangePasswordSerializer
+from .serializers import UserSerializer,ChangePasswordSerializer,RegisterSerializer,ResetPasswordEmailSerializer
 from rest_framework import status
 from django.contrib.auth import update_session_auth_hash
 from django.core.mail import EmailMultiAlternatives
 from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.urls import reverse
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate
+from django.core.exceptions import ObjectDoesNotExist
 from django_rest_passwordreset.signals import reset_password_token_created
 from django.core.mail import EmailMultiAlternatives
 from django_rest_passwordreset.signals import reset_password_token_created
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view,permission_classes
+from rest_framework.permissions import AllowAny
+
 
 
 class UserListView(generics.ListCreateAPIView):
@@ -137,6 +145,50 @@ class UserDetail1(APIView):
         )
         msg.attach_alternative(email_html_message, "text/html")
         msg.send()
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def registeruser(request):
+    if request.method == 'POST':
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)  # Return a JSON response
+        return JsonResponse(serializer.errors, status=400)  # Return errors as JSON response
+
+    return JsonResponse({'detail': 'Invalid request method'}, status=405)  # Return an error for other request methods
+        
+
+def userlogin(request):
+        if request.method == 'POST':
+            username = request.data.get('username')
+            password = request.data.get('password')
+
+            user = None
+            if '@' in username:
+                try:
+                    user = User.objects.get(email=username)
+                except ObjectDoesNotExist:
+                    pass
+
+            if not user:
+                user = authenticate(username=username, password=password)
+
+            if user:
+                token, _ = Token.objects.get_or_create(user=user)
+                return Response({'token': token.key}, status=status.HTTP_200_OK)
+
+            return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    
+def userlogout(request):
+        if request.method == 'POST':
+            try:
+                # Delete the user's token to logout
+                request.user.auth_token.delete()
+                return Response({'message': 'Successfully logged out.'}, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 class Hello(APIView):
     permission_classes = [permissions.AllowAny]
     def get(self, request, format=None):

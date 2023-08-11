@@ -5,10 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
-
 
 
 def home(request):
@@ -42,6 +41,7 @@ def signup(request):
             return redirect('msg')
 
     return render(request, "flipcart/signup.html")
+
 @csrf_protect
 def signin(request):
     if request.method == "POST":

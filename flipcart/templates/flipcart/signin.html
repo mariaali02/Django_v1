@@ -7,6 +7,7 @@
     <meta name="" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <style>
         body {
             background-color: black;
@@ -76,7 +77,7 @@
     <div class="header">
         <h1>Welcome to EPAZZ</h1>
     </div>
-    <form name="registration" class="registartion-form" onsubmit="return formValidation()" method="post" action="/signin/">
+    <form >
         {% csrf_token %}
         <table>
             <h3>Sign In</h3>
@@ -90,8 +91,62 @@
             </tr>
         </table>
         <br>
-        <button type="submit"><a href="/signin">Sign In</a></button>
+        <button type="submit" onsubmit="userLogin()">Sign In</a></button>
     </form>
-    <script src="" async defer></script>
+    <script>
+        function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+        function userLogin() {
+            var username = $('#username').val();
+            var password = $('#password').val();
+            var csrftokenget = getCookie('csrftoken');
+        
+                $.ajaxSetup({
+                        beforeSend: function (xhr, settings) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftokenget);
+                        }
+                    });
+
+            var baseUrl = "http://127.0.0.1:8000/apitest/userlogin/"; // Update the URL
+        
+            $.ajax({
+                method: 'POST',
+                url: baseUrl,
+                dataType: 'json',
+                data: {
+                    username: username,
+                    password: password
+                },
+                success: function(data) {
+                    // Assuming you want to handle the token in some way after successful login
+                    var token = data.token;
+                    // Perform desired actions with the token, such as storing it in local storage or session
+                    // For example:
+                    localStorage.setItem('token', token);
+                    alert("Login successful!");
+                    // Redirect to another page or perform other actions
+                },
+                error: function(xhr, status, error) {
+                    alert("Invalid credentials. Please try again.");
+                    console.error(error);
+                }
+            });
+        }
+        
+    </script>
 </body>
 </html>

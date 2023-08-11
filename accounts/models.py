@@ -3,7 +3,7 @@ from django.db import models
 
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
-
+    dob = models.DateField()
     # Add custom fields here, if needed
 
     # Provide unique related_name values to avoid clashes

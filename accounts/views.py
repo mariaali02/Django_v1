@@ -25,8 +25,7 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
 class UserRegisteration(APIView):
     permission_classes = [permissions.AllowAny]    
 
-
-    def register_user(request):
+def registeruser(request):
         if request.method == 'POST':
             serializer = RegisterSerializer(data=request.data)
             if serializer.is_valid():
@@ -35,7 +34,7 @@ class UserRegisteration(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 
-    def user_login(request):
+def userlogin(request):
         if request.method == 'POST':
             username = request.data.get('username')
             password = request.data.get('password')
@@ -57,7 +56,7 @@ class UserRegisteration(APIView):
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
     
-    def user_logout(request):
+def userlogout(request):
         if request.method == 'POST':
             try:
                 # Delete the user's token to logout
