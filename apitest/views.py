@@ -20,7 +20,9 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import AllowAny
-
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import redirect, render
+from django.contrib.auth import authenticate, login
 
 
 class UserListView(generics.ListCreateAPIView):
@@ -158,29 +160,50 @@ def registeruser(request):
 
     return JsonResponse({'detail': 'Invalid request method'}, status=405)  # Return an error for other request methods
         
-
-def userlogin(request):
-        if request.method == 'POST':
-            username = request.data.get('username')
-            password = request.data.get('password')
-
-            user = None
-            if '@' in username:
-                try:
-                    user = User.objects.get(email=username)
-                except ObjectDoesNotExist:
-                    pass
-
-            if not user:
-                user = authenticate(username=username, password=password)
-
-            if user:
-                token, _ = Token.objects.get_or_create(user=user)
-                return Response({'token': token.key}, status=status.HTTP_200_OK)
-
-            return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-
+@csrf_exempt
+class SignInView(APIView):
+    def post(self, request, format=None):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        
+        objuser = User.objects.get(username=username)
+        
+        if objuser is not None and objuser.check_password(password):
+            if objuser.is_superuser:  # Admin sign-in
+                login(request, objuser)
+                url_success = reverse('superuser_dashboard')  # Use correct URL name
+                return Response({'message': 'Admin sign-in successful', 'url': url_success})
+            elif objuser.is_authenticated:  # Regular user sign-in
+                login(request, objuser)
+                url_success = reverse('user_dashboard')  # Use correct URL name
+                return Response({'message': 'User sign-in successful', 'url': url_success})
+        
+        return Response({'message': 'Sign-in failed'}, status=status.HTTP_401_UNAUTHORIZED)
+"""
+def user_dashboar(request):
+    users = User.objects.all()
+    # Serialize users data to JSON
     
+    
+    users_json = UserSerializer.serialize('json', users)
+    
+    context = {
+        'users': users
+
+    } 
+    return JsonResponse(context)
+def superuser_dashboard(request):
+    users = User.objects.all()
+    
+    # Serialize users data to JSON
+    users_json = UserSerializer.serialize('json', users)
+    
+    context = {
+        'users': users_json,
+        'can_delete_update': True,  # Set a flag to indicate the superuser can delete and update
+    }
+    
+    return JsonResponse(context)"""
 def userlogout(request):
         if request.method == 'POST':
             try:
@@ -189,6 +212,7 @@ def userlogout(request):
                 return Response({'message': 'Successfully logged out.'}, status=status.HTTP_200_OK)
             except Exception as e:
                 return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
 class Hello(APIView):
     permission_classes = [permissions.AllowAny]
     def get(self, request, format=None):

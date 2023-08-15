@@ -288,6 +288,8 @@
     </style>
 </head>
 <body>
+    <form id = "signin">
+    <form id = "superuser">
     <div class="header">
         <h1>Welcome to EPAZZ</h1>
     </div>
@@ -313,7 +315,7 @@
                     <tbody id = "tblmydata">
 
 <!--
-                   </tbody>
+                </tbody>
                     </table>
                 <table>
                     <thead>
@@ -354,6 +356,7 @@
                         </form>
                     </div>
                     </form>
+                </form>
                                 <!-- <form action="{% url 'edit' user_id=user.id %}" method="patch">
                                             {% csrf_token %}
                                             <button type="button" onclick=" return ShowUpdateView({{user.id}})">Edit</button>
@@ -409,6 +412,7 @@
                 <button class="signout-btn" type="submit"><a href="/signout">Sign Out</a></button>
             {% else %}
                 <!-- Regular User Dashboard -->
+                <form id = "user">
                 <h1>User Dashboard</h1>
                 <h3>ACTIVE USER: {{ user.username }}</h3>
 
@@ -424,6 +428,9 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <tbody id = "tblmydata">
+                    <!--   
+                        
                         {% for user in users %}
                             <tr>
                                 <td>{{ user.id }}</td>
@@ -431,7 +438,7 @@
                                 <td>{{ user.email }}</td>
                                 <td>{{ user.date_joined }}</td>
                             </tr> 
-                            {% endfor %}
+                            {% endfor %}-->
                         </tbody>
                     </table>
 
@@ -493,10 +500,10 @@
             formValidation();
 
                 $.ajaxSetup({
-                    beforeSend: function (xhr, settings) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftokenget);
-                    }
-                });
+                        beforeSend: function (xhr, settings) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftokenget);
+                        }
+                    });
             
             var baseUrl = "http://127.0.0.1:8000/apitest/userdetail"; // Base URL of your Django API
             var userId = $('input#lblUserId').val()
@@ -595,8 +602,56 @@
     window.onload= function(){
         getalldata();
 } 
-
-
+function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    $(document).ready(function() {
+        $('signin').on('submit', function(event) {
+            event.preventDefault();
+            
+            var csrftokenget = getCookie('csrftoken');
+            
+                $.ajaxSetup({
+                        beforeSend: function (xhr, settings) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftokenget);
+                        }
+                    });
+    
+            var formData = $(this).serialize();
+            var baseUrl = "http://127.0.0.1:8000/apitest/signin/";
+    
+            $.ajax({
+                type: 'POST',
+                url: baseUrl,
+                data: formData,
+                success: function(response) {
+                    // Assuming the response contains user role information (e.g., response.role)
+                    if (response.role === 'superuser') {
+                        $('superuser').show(); // Show the superuser div
+                        $('user').hide();       // Hide the user div
+                    } else if (response.role === 'user') {
+                        $('superuser').hide(); // Hide the superuser div
+                        $('user').show();       // Show the user div
+                    }
+                },
+                error: function(error) {
+                    alert('error');
+                }
+            });
+        });
+    });
 
     </script>
 </body>

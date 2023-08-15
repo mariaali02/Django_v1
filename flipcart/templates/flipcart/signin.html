@@ -77,7 +77,7 @@
     <div class="header">
         <h1>Welcome to EPAZZ</h1>
     </div>
-    <form >
+    <form id="signin-form">
         {% csrf_token %}
         <table>
             <h3>Sign In</h3>
@@ -91,7 +91,7 @@
             </tr>
         </table>
         <br>
-        <button type="submit" onsubmit="userLogin()">Sign In</a></button>
+        <button type="button" onclick= "userLogin()">Sign In</button>
     </form>
     <script>
         function getCookie(name) {
@@ -111,18 +111,17 @@
             }
 
         function userLogin() {
+            alert("Login");
+            var csrftokenget = getCookie('csrftoken'); // Get CSRF token
+            var baseUrl = "http://127.0.0.1:8000/apitest/signin/"; // Update the URL
             var username = $('#username').val();
             var password = $('#password').val();
-            var csrftokenget = getCookie('csrftoken');
-        
                 $.ajaxSetup({
                         beforeSend: function (xhr, settings) {
                             xhr.setRequestHeader("X-CSRFToken", csrftokenget);
                         }
                     });
 
-            var baseUrl = "http://127.0.0.1:8000/apitest/userlogin/"; // Update the URL
-        
             $.ajax({
                 method: 'POST',
                 url: baseUrl,
@@ -132,17 +131,10 @@
                     password: password
                 },
                 success: function(data) {
-                    // Assuming you want to handle the token in some way after successful login
-                    var token = data.token;
-                    // Perform desired actions with the token, such as storing it in local storage or session
-                    // For example:
-                    localStorage.setItem('token', token);
-                    alert("Login successful!");
-                    // Redirect to another page or perform other actions
+                alert("successfully signin");
                 },
                 error: function(xhr, status, error) {
                     alert("Invalid credentials. Please try again.");
-                    console.error(error);
                 }
             });
         }
