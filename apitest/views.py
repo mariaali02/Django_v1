@@ -3,7 +3,7 @@ from rest_framework import generics, permissions
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from rest_framework.response import Response
-from .serializers import UserSerializer,ChangePasswordSerializer,RegisterSerializer,ResetPasswordEmailSerializer
+from .serializers import UserSerializer,ChangePasswordSerializer,RegisterSerializer,ResetPasswordEmailSerializer,SignInSerializer
 from rest_framework import status
 from django.contrib.auth import update_session_auth_hash
 from django.core.mail import EmailMultiAlternatives
@@ -17,14 +17,22 @@ from django_rest_passwordreset.signals import reset_password_token_created
 from django.core.mail import EmailMultiAlternatives
 from django_rest_passwordreset.signals import reset_password_token_created
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import AllowAny
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect, render
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate, login
 
 
+def get_tokens_for_user(user):
+    refresh = RefreshToken.for_user(user)
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
 class UserListView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -159,26 +167,47 @@ def registeruser(request):
         return JsonResponse(serializer.errors, status=400)  # Return errors as JSON response
 
     return JsonResponse({'detail': 'Invalid request method'}, status=405)  # Return an error for other request methods
-        
-@csrf_exempt
-class SignInView(APIView):
+
+
+class SignIn(APIView):
+    authentication_classes = ()
+
     def post(self, request, format=None):
-        username = request.data.get('username')
-        password = request.data.get('password')
-        
-        objuser = User.objects.get(username=username)
-        
-        if objuser is not None and objuser.check_password(password):
-            if objuser.is_superuser:  # Admin sign-in
-                login(request, objuser)
-                url_success = reverse('superuser_dashboard')  # Use correct URL name
-                return Response({'message': 'Admin sign-in successful', 'url': url_success})
-            elif objuser.is_authenticated:  # Regular user sign-in
-                login(request, objuser)
-                url_success = reverse('user_dashboard')  # Use correct URL name
-                return Response({'message': 'User sign-in successful', 'url': url_success})
-        
-        return Response({'message': 'Sign-in failed'}, status=status.HTTP_401_UNAUTHORIZED)
+        _userName = request.data['username'] if 'username' in request.data else None
+        _password = request.data['password'] if 'password' in request.data else None
+        if _userName and _password:
+            objUser = authenticate(username=_userName, password=_password)
+            if objUser:
+                if objUser.is_authenticated:
+                    if objUser.is_superuser:  # Admin sign-in
+                        login(request, objUser)
+                        url_success = reverse('SuperuserDashboard')  # Use correct URL name
+                        return Response({'message': 'Admin sign-in successful', 'url': url_success})
+                    else:  # Regular user sign-in
+                        login(request, objUser)
+                        url_success = reverse('UserDashboard')  # Use correct URL name
+                        return Response({'message': 'User sign-in successful', 'url': url_success})
+
+            return Response({'message': 'Sign-in failed'}, status=status.HTTP_401_UNAUTHORIZED)
+def UserDashboard(request):
+    users = User.objects.all()
+
+    context = {
+        'users': users
+
+    }
+
+    return render(request, 'flipcart/db.html', context)
+def SuperuserDashboard(request):
+    users = User.objects.all()
+
+    context = {
+        'users': users,
+        'can_delete_update': True,  # Set a flag to indicate the superuser can delete and update
+
+    }
+
+    return render(request, 'flipcart/db.html', context)
 """
 def user_dashboar(request):
     users = User.objects.all()

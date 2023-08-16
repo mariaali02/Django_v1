@@ -77,7 +77,7 @@
     <div class="header">
         <h1>Welcome to EPAZZ</h1>
     </div>
-    <form id="signin-form">
+    <form id="signinform">
         {% csrf_token %}
         <table>
             <h3>Sign In</h3>
@@ -91,7 +91,7 @@
             </tr>
         </table>
         <br>
-        <button type="button" onclick= "userLogin()">Sign In</button>
+        <button type="button" onclick= "UserLogin()">Sign In</button>
     </form>
     <script>
         function getCookie(name) {
@@ -109,36 +109,47 @@
                 }
                 return cookieValue;
             }
-
-        function userLogin() {
-            alert("Login");
-            var csrftokenget = getCookie('csrftoken'); // Get CSRF token
-            var baseUrl = "http://127.0.0.1:8000/apitest/signin/"; // Update the URL
-            var username = $('#username').val();
-            var password = $('#password').val();
-                $.ajaxSetup({
-                        beforeSend: function (xhr, settings) {
-                            xhr.setRequestHeader("X-CSRFToken", csrftokenget);
-                        }
-                    });
-
+    
+        function UserLogin() {
+            alert("register");
+            var csrftokenget = getCookie('csrftoken');
+                
+    
+                    $.ajaxSetup({
+                            beforeSend: function (xhr, settings) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftokenget);
+                            }
+                        });
+    
+            var baseUrl = "http://127.0.0.1:8000/apitest/SignIn/";
+    
+            var formData = {
+                username: $('#username').val(),
+                password: $('#password').val(),
+            };
+    
             $.ajax({
-                method: 'POST',
+                type: 'POST',
                 url: baseUrl,
+                data: formData,
                 dataType: 'json',
-                data: {
-                    username: username,
-                    password: password
+                success: function (data) {
+                    alert('login successful!');
+                        window.location.href = data.url;
                 },
-                success: function(data) {
-                alert("successfully signin");
-                },
-                error: function(xhr, status, error) {
-                    alert("Invalid credentials. Please try again.");
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.responseJSON ? xhr.responseJSON.error : 'An error occurred';
+                    $('#errorMessage').html('login failed failed: ' + errorMessage);
                 }
             });
         }
-        
+    
+        $(document).ready(function () {
+            $('#signinform').submit(function (event) {
+                event.preventDefault();
+                UserLogin();
+            });
+        });
     </script>
 </body>
 </html>

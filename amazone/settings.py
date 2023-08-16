@@ -39,13 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'flipcart',
     'rest_framework',
-    'apitest',
-    'knox',
-    'accounts',
     'rest_framework.authtoken',
-    'django_rest_passwordreset',
-    
-    
+    #'rest_framework_api_key',
+    'apitest',
+    #'knox',
+    'accounts',
+    'django_rest_passwordreset',    
 ]
 
 MIDDLEWARE = [
@@ -140,12 +139,20 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
+    
+    'DEFAULT_AUTHENTICATION_CLASSES':[
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+        'rest_framework.permissions.AllowAny',
+        #'rest_framework_api_key.permissions.HasAPIKey',
+        #'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
         # 'rest_framework.authentication.BasicAuthentication',
         # 'rest_framework.authentication.SessionAuthentication',
-        'knox.auth.TokenAuthentication',
+        #'knox.auth.TokenAuthentication',
     ]
 }
