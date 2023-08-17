@@ -14,5 +14,7 @@ urlpatterns = [
     path('SignIn/', views.SignIn.as_view(), name='SignIn'),
     path('UserDashboard/', views.UserDashboard, name='UserDashboard'),
     path('SuperuserDashboard/', views.SuperuserDashboard, name='SuperuserDashboard'),
+    path('SignOut/', views.SignOut.as_view(), name='SignOut'),
+    path('logout/', views.logout ,name='logout'),
 
 ]

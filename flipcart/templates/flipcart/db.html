@@ -406,7 +406,7 @@
             
                 </div>
                 
-                <button class="signout-btn" type="submit"><a href="/signout">Sign Out</a></button>
+                <button class="signout-btn" onclick="userLogout()">Sign Out</button>
             {% else %}
                 <!-- Regular User Dashboard -->
                 <h1>User Dashboard</h1>
@@ -435,7 +435,7 @@
                         </tbody>
                     </table>
 
-                <button class="signout-btn" type="submit"><a href="/signout">Sign Out</a></button>
+                <button class="signout-btn" onclick="userLogout()">Sign Out</button>
                 <button class="change_password" type="submit"><a href="/change_password">Change Password</a></button>
             {% endif %}
         {% else %}
@@ -592,11 +592,50 @@
 
 }
 }
-    window.onload= function(){
-        getalldata();
-} 
+        window.onload= function(){
+            getalldata();
+    } 
 
+    function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
 
+    function userLogout() {
+        var csrftokenget = getCookie('csrftoken'); // Get CSRF token
+        var baseUrl = "http://127.0.0.1:8000/apitest/SignOut/"; // Update the URL
+        
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", csrftokenget);
+            }
+        });
+
+        $.ajax({
+            method: 'POST',
+            url: baseUrl,
+            dataType: 'json',
+            success: function(data) {
+                alert("Successfully logged out.");
+                window.location.href = data.url;
+            },
+            error: function(xhr, status, error) {
+                alert("Logout failed. Please try again.");
+                
+            }
+        });
+    }
 
     </script>
 </body>

@@ -1,5 +1,6 @@
 # apitest/api/views.py
 from rest_framework import generics, permissions
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from rest_framework.response import Response
@@ -25,6 +26,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect, render
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate, login
+from django.contrib.auth import logout
 
 
 def get_tokens_for_user(user):
@@ -233,14 +235,26 @@ def superuser_dashboard(request):
     }
     
     return JsonResponse(context)"""
-def userlogout(request):
-        if request.method == 'POST':
-            try:
-                # Delete the user's token to logout
-                request.user.auth_token.delete()
-                return Response({'message': 'Successfully logged out.'}, status=status.HTTP_200_OK)
-            except Exception as e:
-                return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class SignOut(APIView):
+
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = ()
+    
+    def post(self, request, format=None):
+        
+        logout(request)
+        url_success = reverse('logout')  # Use correct URL name
+        return Response({'message': 'Successfully logged out.', 'url': url_success }, status=status.HTTP_200_OK)
+    
+            
+def logout(request):
+    
+    return render(request, "flipcart/signout.html")
+
+
+
+
             
 class Hello(APIView):
     permission_classes = [permissions.AllowAny]
