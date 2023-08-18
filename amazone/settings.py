@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'apitest',
     #'knox',
     'accounts',
-    'django_rest_passwordreset',    
+    'django_rest_passwordreset',
+   
 ]
 
 MIDDLEWARE = [

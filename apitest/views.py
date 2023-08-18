@@ -1,4 +1,6 @@
 # apitest/api/views.py
+from datetime import datetime
+from flipcart.models import UserProfile
 from rest_framework import generics, permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -158,17 +160,37 @@ class UserDetail1(APIView):
         msg.attach_alternative(email_html_message, "text/html")
         msg.send()
 
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def registeruser(request):
-    if request.method == 'POST':
-        serializer = RegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)  # Return a JSON response
-        return JsonResponse(serializer.errors, status=400)  # Return errors as JSON response
+class registeruser(APIView):
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = ()
 
-    return JsonResponse({'detail': 'Invalid request method'}, status=405)  # Return an error for other request methods
+    def post(self, request, format=None):
+        if request.method == 'POST':
+            objUser = User.objects.create_user(username=request.data["username"], password=request.data["password"])
+            #serializer = RegisterSerializer(data=request.data)
+            #if serializer.is_valid():
+            #    serializer.save()
+            #return JsonResponse(serializer.data, status=201) 
+        # Assuming you have already created a User object with pk=65
+        #objUser = User.objects.get(pk=65)
+    
+        # Convert the date string to a datetime.date object
+    
+            date_of_birth_str = request.data.get('date_of_birth')
+            date_of_birth = datetime.strptime(date_of_birth_str, "%Y-%m-%d").date()
+            gender = request.data.get('gender')
+            phone_number = request.data.get('phone_number')
+            objUserProfile = UserProfile.objects.create(
+                user=objUser,
+                DateOfBirth= date_of_birth ,
+                gender=gender,
+                phone_number=phone_number
+            )
+            
+            print("User profile created:", objUserProfile)
+            
+            return JsonResponse({'message': 'User profile created successfully.'}, status=201)
+        return JsonResponse({'detail': 'Invalid request method'}, status=405)  # Return an error for other request methods
 
 
 class SignIn(APIView):
