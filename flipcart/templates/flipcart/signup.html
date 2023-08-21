@@ -97,12 +97,34 @@
                     <td><span id="email-error" class="error"></span></td>
                 </tr>
                 <tr>
-                    <td><label for="dob">Date Of Birth:</label></td>
-                    <td><input type="date" name="dob" id="dob"></td>
+                    <td><label for="date_of_birth ">Date Of Birth:</label></td>
+                    <td><input type="date" name="date_of_birth " id="date_of_birth "></td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td><span id="dob-error"class="error"></span></td>
+                    <td><span id="date_of_birth -error"class="error"></span></td>
+                </tr>
+                <tr>
+                    <td><label for="gender">Gender:</label></td>
+                    <td>
+                        <select name="gender" id="gender">
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><span id="gender-error" class="error"></span></td>
+                </tr>
+                <tr>
+                    <td><label for="phone">Phone Number:</label></td>
+                    <td><input type="text" name="phone" id="phone" placeholder="Your phone number"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><span id="phone-error" class="error"></span></td>
                 </tr>
                 <tr>
                     <td><label for="password">Password:</label></td>
@@ -154,14 +176,16 @@
                         }
                     });
 
-        var baseUrl = "http://127.0.0.1:8000/apitest/register/";
+        var baseUrl = "http://127.0.0.1:8000/apitest/registeruser/";
 
         var formData = {
             username: $('#username').val(),
             email: $('#email').val(),
             password: $('#password').val(),
-            dob: $('#dob').val(),
+            date_of_birth : $('#date_of_birth ').val(),
             cpassword: $('#cpassword').val(),
+            gender: $('#gender').val(),       
+            phone: $('#phone').val() 
         };
 
         $.ajax({
@@ -194,12 +218,12 @@
             var email = document.getElementById("email").value;
             var password = document.getElementById("password").value;
             var cPassword = document.getElementById("cpassword").value;
-            var dob = document.getElementById("dob").value;
+            var date_of_birth  = document.getElementById("date_of_birth ").value;
             var usernameError = document.getElementById("username-error");
             var emailError = document.getElementById("email-error");
             var passwordError = document.getElementById("password-error");
             var cpasswordError = document.getElementById("cpassword-error");
-            var dobError = document.getElementById("dob-error");
+            var dobError = document.getElementById("date_of_birth -error");
     
             usernameError.innerHTML = "";
             emailError.innerHTML = "";
@@ -231,7 +255,7 @@
             }
     
             var currentDate = new Date();
-            var selectedDate = new Date(dob);
+            var selectedDate = new Date(date_of_birth );
             if (selectedDate.toDateString() === currentDate.toDateString()) {
                 dobError.innerHTML = "Please select a date other than today";
                 return false;

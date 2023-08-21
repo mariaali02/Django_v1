@@ -8,6 +8,8 @@ urlpatterns = [
     # Include API endpoints from your views
     path('users/', views.UserListView.as_view(), name='user-list'),
     path('users/<int:pk>/', views.UserDetailView.as_view(), name='user-detail'),
+    path('UserProfile/',views.UserProfileListView.as_view(), name='userprofile-list'),
+    path('UserProfile/<int:pk>/', views.UserProfileView.as_view(), name='userprofile-detail'),
     path('hello', views.Hello.as_view()),
     path('userdetail', views.UserDetail1.as_view()),
     path('registeruser/', views.registeruser.as_view(), name='registeruser'),

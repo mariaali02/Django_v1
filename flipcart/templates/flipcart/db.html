@@ -36,6 +36,9 @@
                             <td>${ xhr[i].username }</td>
                             <td>${ xhr[i].email }</td>
                             <td> ${ xhr[i].date_joined }</td>
+                            <td> ${ xhr[i].DateOfBirth }</td>
+                            <td> ${ xhr[i].gender }</td>
+                            <td> ${ xhr[i].phone_number}</td>
                             <td>
                                 <button onclick="deleteUser(${xhr[i].id})">Delete</button>
                                 <button onclick="ShowUpdateView(${xhr[i].id})">Edit</button>
@@ -305,6 +308,9 @@
                             <th>Username</th>
                             <th>Email</th>
                             <th>Date of Joining</th>
+                            <th>Date of Birth</th>
+                            <th>Gender</th>
+                            <th>Phone Number</th>
                             {% if can_delete_update %}
                                 <th>Actions</th>
                             {% endif %}
@@ -313,7 +319,7 @@
                     <tbody id = "tblmydata">
 
 <!--
-                   </tbody>
+                </tbody>
                     </table>
                 <table>
                     <thead>
@@ -395,6 +401,28 @@
                                     <td><span id="email-error" class="error"></span></td>
                                 </tr>
                                 <tr>
+                                    <td>Gender</td>
+                                    <td>
+                                        <select name="gender" id="selGender">
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><span id="gender-error" class="error"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Phone Number</td>
+                                    <td><input type="text" name="phone" id="txtPhone" placeholder="Your phone number"></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><span id="phone-error" class="error"></span></td>
+                                </tr>
+                                <tr>
                                     <td>                     
                                         <button type="button" id="btnUpdate" onclick="return updateUser()"> Update</button>
 
@@ -420,6 +448,9 @@
                             <th>Username</th>
                             <th>Email</th>
                             <th>Date of Joining</th>
+                            <th>Date of Birth</th>
+                            <th>Gender</th>
+                            <th>Phone Number</th>
                             
                         </tr>
                     </thead>
@@ -430,6 +461,9 @@
                                 <td>{{ user.username }}</td>
                                 <td>{{ user.email }}</td>
                                 <td>{{ user.date_joined }}</td>
+                                <td>{{ user.DateOfBirth }}</td>
+                                <td>{{ user.gender}}</td>
+                                <td>{{ user.phone_number}}</td>
                             </tr> 
                             {% endfor %}
                         </tbody>
@@ -478,8 +512,13 @@
                 complete: function (xhr, errmsg, err) {
                     $('input#txtUserName').val(xhr.responseJSON[0]["username"]);
                     $('input#txtEmail').val(xhr.responseJSON[0]["email"]);
-                    $('input#txtdob').val(xhr.responseJSON[0]["dob"]);
+                    $('input#txtdob').val(xhr.responseJSON[0]["date_of_birth "]);
                     $('input#lblUserId').val(xhr.responseJSON[0]["id"]);
+                    $('input#txtUserName').val(xhr.responseJSON[0]["username"]);
+                    $('input#txtEmail').val(xhr.responseJSON[0]["email"]);
+                    $('input#txtDOB').val(xhr.responseJSON[0]["DateOfBirth"]);
+                    $('input#txtPhone').val(xhr.responseJSON[0]["phone_number"]); // Assuming the ID for the Phone Number input is 'txtPhone'
+                    $('select#selGender').val(xhr.responseJSON[0]["gender"]); // Assuming the ID for the Gender select is 'selGender'
                     console.log('JSON Data:', xhr.responseJSON);
                 },
                 success: function (xhr, errmsg, err) {
@@ -519,7 +558,7 @@
                 /* $('input#txtUserName').val(xhr.responseJSON[0]["username"])
                     $('input#txtEmail').val(xhr.responseJSON[0]["email"])
                     $('input#lblUserId').val(xhr.responseJSON[0]["id"])
-                    $('input#txtdob').val(xhr.responseJSON[0]["dob"])*/
+                    $('input#txtdob').val(xhr.responseJSON[0]["date_of_birth "])*/
                 
                     alert('User updated successfully!');
                 },

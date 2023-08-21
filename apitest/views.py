@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from rest_framework.response import Response
-from .serializers import UserSerializer,ChangePasswordSerializer,RegisterSerializer,ResetPasswordEmailSerializer,SignInSerializer
+from .serializers import UserSerializer,ChangePasswordSerializer,UserProfileSerializer,RegisterSerializer,ResetPasswordEmailSerializer,SignInSerializer
 from rest_framework import status
 from django.contrib.auth import update_session_auth_hash
 from django.core.mail import EmailMultiAlternatives
@@ -37,14 +37,28 @@ def get_tokens_for_user(user):
         'refresh': str(refresh),
         'access': str(refresh.access_token),
     }
+
 class UserListView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    serializer_class = UserProfileSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    serializer_class = UserProfileSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+class UserProfileView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+class UserProfileListView(generics.ListCreateAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    serializer_class = UserProfileSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 class UserDetail1(APIView):
@@ -74,6 +88,54 @@ class UserDetail1(APIView):
 
         return Response(serializer.data)
 
+
+
+
+
+
+
+
+
+
+
+
+        """"
+        userId = int(request.GET['user']) if 'user' in request.GET else None
+
+        if userId:
+            try:
+                objUser = User.objects.filter(pk=userId)
+                objUserProfile = UserProfile.objects.filter(user= objUser )
+            except (User.DoesNotExist, UserProfile.DoesNotExist):
+                return Response({'error': 'User profile not found'}, status=404)
+        else:
+            objUser = User.objects.filter(pk=userId)
+            objUserProfile = UserProfile.objects.all(user= objUser)
+            serializer = UserSerializer(objUser,many=True)
+            serializer = UserProfileSerializer( objUserProfile,many=True)
+            return Response( serializer.data)"""
+        
+    """"
+        userId = int(request.GET.get('userId')) if 'userId' in request.GET else None
+        user = int(request.GET['user']) if 'user' in request.GET else None
+        if userId:
+            try: 
+                objUser = User.objects.get(pk=userId)
+                objUserProfile = UserProfile.objects.get(user=objUser)
+            except (User.DoesNotExist, UserProfile.DoesNotExist):
+                return Response({'error': 'User profile not found'}, status=404)
+
+            serializer = UserSerializer(objUser)
+            profile_serializer = UserProfileSerializer(objUserProfile)
+            return Response({'objUser': serializer.data, 'objUserProfile': profile_serializer.data})
+        else:
+            objUser = User.objects.all()
+            objUserProfile = UserProfile.objects.all()
+            
+            user_serializer = UserSerializer(objUser, many=True)
+            profile_serializer = UserProfileSerializer(objUserProfile, many=True)
+            return Response({'objUser': user_serializer.data, 'objUserProfile': profile_serializer.data})"""
+        
     def put(self, request, format=None):        
         userId = int(request.query_params['userId']) if request.query_params['userId'] else None
         dicUser = {}
@@ -167,6 +229,7 @@ class registeruser(APIView):
     def post(self, request, format=None):
         if request.method == 'POST':
             objUser = User.objects.create_user(username=request.data["username"], password=request.data["password"])
+            
             #serializer = RegisterSerializer(data=request.data)
             #if serializer.is_valid():
             #    serializer.save()
@@ -175,23 +238,35 @@ class registeruser(APIView):
         #objUser = User.objects.get(pk=65)
     
         # Convert the date string to a datetime.date object
-    
+            email = request.data.get('email')
             date_of_birth_str = request.data.get('date_of_birth')
             date_of_birth = datetime.strptime(date_of_birth_str, "%Y-%m-%d").date()
             gender = request.data.get('gender')
             phone_number = request.data.get('phone_number')
             objUserProfile = UserProfile.objects.create(
                 user=objUser,
-                DateOfBirth= date_of_birth ,
+                Email = email,
+                date_of_birth= date_of_birth ,
                 gender=gender,
                 phone_number=phone_number
             )
-            
+            objUserProfile.save()
             print("User profile created:", objUserProfile)
             
             return JsonResponse({'message': 'User profile created successfully.'}, status=201)
         return JsonResponse({'detail': 'Invalid request method'}, status=405)  # Return an error for other request methods
 
+    def get(self, request, format=None):
+            
+            userId = int(request.GET['userId']) if 'userId' in request.GET else None
+
+            if userId:
+                queryset = UserProfile.objects.filter(pk=userId)
+            else:
+                queryset = UserProfile.objects.all()
+            serializer = UserSerializer(queryset, many=True)
+
+            return Response(serializer.data)
 
 class SignIn(APIView):
     authentication_classes = ()
