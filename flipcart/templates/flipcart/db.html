@@ -29,19 +29,19 @@
                 success: function (xhr, errmsg, err) {
                     console.log('Success:', xhr);
                     $('tbody#tblmydata').children().remove();
-                    for (i=0; i < xhr.length; i++){
+                    for (i=0; i < xhr.data.length; i++){
+                        const userData = xhr.data[i];
                         $('tbody#tblmydata').append(
                         `<tr>
-                            <td>${xhr[i].id }</td>
-                            <td>${ xhr[i].username }</td>
-                            <td>${ xhr[i].email }</td>
-                            <td> ${ xhr[i].date_joined }</td>
-                            <td> ${ xhr[i].DateOfBirth }</td>
-                            <td> ${ xhr[i].gender }</td>
-                            <td> ${ xhr[i].phone_number}</td>
+                            <td>${userData.userId}</td>
+                            <td>${ userData.user }</td>
+                            <td>${ userData.email }</td>
+                            <td> ${ userData.date_of_birth}</td>
+                            <td> ${ userData.gender }</td>
+                            <td> ${ userData.phone_number}</td>
                             <td>
-                                <button onclick="deleteUser(${xhr[i].id})">Delete</button>
-                                <button onclick="ShowUpdateView(${xhr[i].id})">Edit</button>
+                                <button onclick="deleteUser(${userData.userId})">Delete</button>
+                                <button onclick="ShowUpdateView(${userData.userId})">Edit</button>
                                 <button type="button" onclick="removedata()">Remove</button>
                             </td>
                         </tr>`     
@@ -291,9 +291,7 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Welcome to EPAZZ</h1>
-    </div>
+
     <div class="container">
 
         {% if user.is_authenticated %}
@@ -307,7 +305,6 @@
                             <th>ID</th>
                             <th>Username</th>
                             <th>Email</th>
-                            <th>Date of Joining</th>
                             <th>Date of Birth</th>
                             <th>Gender</th>
                             <th>Phone Number</th>
@@ -382,7 +379,7 @@
                             <tbody>
                                 <tr>
                                     <td>ID</td>
-                                    <td><input type="number" id="lblUserId" /></td> 
+                                    <td><input type="number" id="lblUserId" ></td> 
                                 </tr>
                                 <tr>
                                     <td>UserName</td>
@@ -400,6 +397,13 @@
                                     <td></td>
                                     <td><span id="email-error" class="error"></span></td>
                                 </tr>
+                                <td>DateOfBirth</td>
+                                <td><input type="date" name="DateOfBirth" id="txtdob" placeholder="Your date of birth"></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><span id="dob-error" class="error"></span></td>
+                            </tr>
                                 <tr>
                                     <td>Gender</td>
                                     <td>
@@ -454,6 +458,7 @@
                             
                         </tr>
                     </thead>
+                    
                     <tbody>
                         {% for user in users %}
                             <tr>
@@ -461,7 +466,7 @@
                                 <td>{{ user.username }}</td>
                                 <td>{{ user.email }}</td>
                                 <td>{{ user.date_joined }}</td>
-                                <td>{{ user.DateOfBirth }}</td>
+                                <td>{{ user.date_of_birth  }}</td>
                                 <td>{{ user.gender}}</td>
                                 <td>{{ user.phone_number}}</td>
                             </tr> 
@@ -510,16 +515,17 @@
                     console.log('Error:', err);
                 },
                 complete: function (xhr, errmsg, err) {
-                    $('input#txtUserName').val(xhr.responseJSON[0]["username"]);
-                    $('input#txtEmail').val(xhr.responseJSON[0]["email"]);
-                    $('input#txtdob').val(xhr.responseJSON[0]["date_of_birth "]);
-                    $('input#lblUserId').val(xhr.responseJSON[0]["id"]);
-                    $('input#txtUserName').val(xhr.responseJSON[0]["username"]);
-                    $('input#txtEmail').val(xhr.responseJSON[0]["email"]);
-                    $('input#txtDOB').val(xhr.responseJSON[0]["DateOfBirth"]);
-                    $('input#txtPhone').val(xhr.responseJSON[0]["phone_number"]); // Assuming the ID for the Phone Number input is 'txtPhone'
-                    $('select#selGender').val(xhr.responseJSON[0]["gender"]); // Assuming the ID for the Gender select is 'selGender'
-                    console.log('JSON Data:', xhr.responseJSON);
+    
+                    const userData = xhr.responseJSON.data;
+                    $('input#txtUserName').val(userData.user);
+                    $('input#txtEmail').val(userData.email);
+                    $('input#txtdob').val(userData.date_of_birth);
+                    $('input#lblUserId').val(userData.userId);
+                    $('input#txtEmail').val(userData.email);
+                    $('input#txtPhone').val(userData.phone_number); // Assuming the ID for the Phone Number input is 'txtPhone'
+                    $('select#selGender').val(userData.gender); // Assuming the ID for the Gender select is 'selGender'
+                    console.log('JSON Data:', userData);
+
                 },
                 success: function (xhr, errmsg, err) {
                     console.log('Success:', xhr);
@@ -538,34 +544,34 @@
                 });
             
             var baseUrl = "http://127.0.0.1:8000/apitest/userdetail"; // Base URL of your Django API
-            var userId = $('input#lblUserId').val()
-            var email = $('input#txtEmail').val()
-            var username = $('input#txtUserName').val()
-            var Url = baseUrl + `?userId=${userId}` ;
+            
+            var userData = {
+                userId:$('#lblUserId').val(),
+                user: $('#txtUserName').val(),
+                email: $('#txtEmail').val(),
+                date_of_birth: $('#txtdob').val(),
+                gender: $('#selGender').val(),
+                phone_number: $('#txtPhone').val()
+            };
 
             $.ajax({
                 method: 'PUT',
-                url: Url, // Use the 'Url' variable containing the complete URL
-                dataType: 'application/json',
-                data:{'email' : email,
-                'username':username
-            },
-                dataType: 'json',
-                error: function(xhr, errmsg, err) {
-                    console.log('Error updating user:', xhr.responseJSON);
+                url: baseUrl,
+                dataType: "json",
+                data: userData,
+                error: function (xhr, errmsg, err) {
+                    console.log('Error:', err);
                 },
-                complete: function(xhr, errmsg, err){
-                /* $('input#txtUserName').val(xhr.responseJSON[0]["username"])
-                    $('input#txtEmail').val(xhr.responseJSON[0]["email"])
-                    $('input#lblUserId').val(xhr.responseJSON[0]["id"])
-                    $('input#txtdob').val(xhr.responseJSON[0]["date_of_birth "])*/
-                
-                    alert('User updated successfully!');
+                complete: function (xhr, errmsg, err) {
+                    console.log('JSON Data:', xhr.responseJSON);
+                    alert('User data updated successfully');
                 },
-                success:  function(xhr, errmsg, err){},
-                
-            })
-        } 
+                success: function (xhr, errmsg, err) {
+                    console.log('Success:', xhr);
+                },
+            });
+        }
+
         function formValidation() {
             var username = document.getElementById("txtUserName").value;
             var email = document.getElementById("txtEmail").value;

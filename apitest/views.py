@@ -43,7 +43,7 @@ class UserListView(generics.ListCreateAPIView):
     serializer_class = UserSerializer
     serializer_class = UserProfileSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    
+
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -63,32 +63,59 @@ class UserProfileListView(generics.ListCreateAPIView):
 
 class UserDetail1(APIView):
     permission_classes = [permissions.AllowAny]
-    
-    """def get(self, request, format=None):
+    def get(self, request, format=None):
+        userId = request.GET.get('userId')
 
-        userId = request.GET['userId']
-        userId = int(userId)
         if userId:
-            queryset = User.objects.filter(pk=userId)
-        else:
-            queryset = User.objects.all()
-        serializer = UserSerializer(queryset, many=True)
+            try:
+                objUser = User.objects.get(pk=userId)
+                objUserProfile = UserProfile.objects.filter(user=objUser).first()
 
-        return Response(serializer.data)"""
-        
+                serializer_user = UserSerializer(objUser)
+                serializer_profile = UserProfileSerializer(objUserProfile)
+                content = {
+                    'user' : serializer_user.data['username'],
+                    'email' : serializer_user.data['email'],
+                    'date_of_birth' : serializer_profile.data['date_of_birth'],
+                    'gender': serializer_profile.data['gender'],
+                    'phone_number':serializer_profile.data['phone_number'],
+                }
+                return Response({'data' : content}, status=200)
+
+            except User.DoesNotExist:
+                return Response({'error': 'User not found'}, status=404)
+        else:
+            try:
+                collectionUser = User.objects.all()
+                data = []
+                for objUser in collectionUser:
+                    objUserProfile = UserProfile.objects.filter(user=objUser.id).first()
+                    content = {
+                        
+                        'userId':objUser.id,
+                        'user' : objUser.username,
+                        'email' : objUser.email,
+                        'date_of_birth' : objUserProfile.date_of_birth if objUserProfile else None,
+                        'gender': objUserProfile.gender if objUserProfile else None,
+                        'phone_number': str(objUserProfile.phone_number) if objUserProfile else None
+                    }
+                    data.append(content)
+                return Response({'data': data}, status=200)
+            except User.DoesNotExist:
+                return Response({'error': 'User not found'}, status=404)
+
+    """     
     def get(self, request, format=None):
         
         userId = int(request.GET['userId']) if 'userId' in request.GET else None
 
         if userId:
-            queryset = User.objects.filter(pk=userId)
+            objuser = User.objects.filter(pk=userId)
         else:
-            queryset = User.objects.all()
-        serializer = UserSerializer(queryset, many=True)
+            objuser = User.objects.all()
+        serializer = UserSerializer(objuser, many=True)
 
-        return Response(serializer.data)
-
-
+        return Response(serializer.data)"""
 
 
 
@@ -99,52 +126,42 @@ class UserDetail1(APIView):
 
 
 
-        """"
-        userId = int(request.GET['user']) if 'user' in request.GET else None
 
-        if userId:
-            try:
-                objUser = User.objects.filter(pk=userId)
-                objUserProfile = UserProfile.objects.filter(user= objUser )
-            except (User.DoesNotExist, UserProfile.DoesNotExist):
-                return Response({'error': 'User profile not found'}, status=404)
-        else:
-            objUser = User.objects.filter(pk=userId)
-            objUserProfile = UserProfile.objects.all(user= objUser)
-            serializer = UserSerializer(objUser,many=True)
-            serializer = UserProfileSerializer( objUserProfile,many=True)
-            return Response( serializer.data)"""
+
         
-    """"
-        userId = int(request.GET.get('userId')) if 'userId' in request.GET else None
-        user = int(request.GET['user']) if 'user' in request.GET else None
-        if userId:
-            try: 
-                objUser = User.objects.get(pk=userId)
-                objUserProfile = UserProfile.objects.get(user=objUser)
-            except (User.DoesNotExist, UserProfile.DoesNotExist):
-                return Response({'error': 'User profile not found'}, status=404)
+    """"""    
+    """
+    
+    
+                if 'user' in request.data:
+                    objUser.username = request.data['user']
+                if 'email' in request.data:
+                    objUser.email = request.data['email']
+                if 'date_of_birth' in request.data:
+                    objUserProfile.date_of_birth = request.data['date_of_birth']
+                if 'gender' in request.data:
+                    objUserProfile.gender = request.data['gender']
+                if 'phone_number' in request.data:
+                    objUserProfile.phone_number = request.data['phone_number']
 
-            serializer = UserSerializer(objUser)
-            profile_serializer = UserProfileSerializer(objUserProfile)
-            return Response({'objUser': serializer.data, 'objUserProfile': profile_serializer.data})
-        else:
-            objUser = User.objects.all()
-            objUserProfile = UserProfile.objects.all()
-            
-            user_serializer = UserSerializer(objUser, many=True)
-            profile_serializer = UserProfileSerializer(objUserProfile, many=True)
-            return Response({'objUser': user_serializer.data, 'objUserProfile': profile_serializer.data})"""
-        
+                objUser.save()
+                objUserProfile.save()"""
+                
     def put(self, request, format=None):        
         userId = int(request.query_params['userId']) if request.query_params['userId'] else None
         dicUser = {}
         dicUser["email"] = request.data['email']
         dicUser["username"] = request.data['username']
+        proUser = {}
+        proUser["date_of_birth"] = request.data['date_of_birth']
+        proUser["gender"] = request.data['gender']
+        proUser["phone_number"] = request.data['phone_number']
         try:
             if userId:
                 objUser = User.objects.filter(pk=userId)
                 res = objUser.update(**dicUser)
+                objUserProfile =  objUserProfile.objects.filter(pk=userId)
+                res =  objUserProfile.update(**proUser)
                 if res:
                 # serializer = UserSerializer(objUser, data=request.data)
                 # if serializer.is_valid():
@@ -228,7 +245,8 @@ class registeruser(APIView):
 
     def post(self, request, format=None):
         if request.method == 'POST':
-            objUser = User.objects.create_user(username=request.data["username"], password=request.data["password"])
+            objUser = User.objects.create_user(username=request.data["username"], password=request.data["password"], email = request.data["email"],
+            date_of_birth_str = UserProfile.request.data["date_of_birth"], gender = UserProfile.request.data["gender"],phone_number = UserProfile.request.data["phone_number"])
             
             #serializer = RegisterSerializer(data=request.data)
             #if serializer.is_valid():

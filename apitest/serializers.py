@@ -7,11 +7,13 @@ from flipcart.models import UserProfile
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields =['id','username', 'email', 'password']
+        fields =['id','username', 'email', 'password' ]
+
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ['user', 'date_of_birth', 'gender', 'phone_number']  
+
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
