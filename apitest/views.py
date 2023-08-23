@@ -62,6 +62,7 @@ class UserProfileListView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 class UserDetail1(APIView):
+    authentication_classes = ()
     permission_classes = [permissions.AllowAny]
     def get(self, request, format=None):
         userId = request.GET.get('userId')
@@ -147,21 +148,32 @@ class UserDetail1(APIView):
                 objUser.save()
                 objUserProfile.save()"""
                 
+                
     def put(self, request, format=None):        
         userId = int(request.query_params['userId']) if request.query_params['userId'] else None
         dicUser = {}
-        dicUser["email"] = request.data['email']
-        dicUser["username"] = request.data['username']
+        if 'email' in request.data:
+            dicUser["email"] = request.data['email']
+        if 'username' in request.data:
+            dicUser["username"] = request.data['username']
         proUser = {}
-        proUser["date_of_birth"] = request.data['date_of_birth']
-        proUser["gender"] = request.data['gender']
-        proUser["phone_number"] = request.data['phone_number']
+        if 'date_of_birth' in request.data:
+            proUser["date_of_birth"] = request.data['date_of_birth']
+        if 'gender' in request.data:
+            proUser["gender"] = request.data['gender']
+        if 'phone_number' in request.data:
+            proUser["phone_number"] = request.data['phone_number']
         try:
             if userId:
-                objUser = User.objects.filter(pk=userId)
-                res = objUser.update(**dicUser)
-                objUserProfile =  objUserProfile.objects.filter(pk=userId)
+                collectionUser = User.objects.filter(pk=userId)
+                res = collectionUser.update(**dicUser)
+                objUserProfile =  UserProfile.objects.filter(user= collectionUser.first().id)
                 res =  objUserProfile.update(**proUser)
+                if  objUserProfile.exists():
+                    res =  objUserProfile.update(**proUser)
+                else:
+                    collectionUser = UserProfile.objects.create(user=collectionUser.first(),**proUser)
+                    res =  objUserProfile.update(**proUser)
                 if res:
                 # serializer = UserSerializer(objUser, data=request.data)
                 # if serializer.is_valid():
@@ -209,6 +221,7 @@ class UserDetail1(APIView):
         :param instance: View Instance that sent the signal
         :param reset_password_token: Token Model Object
         :param args:
+        
         :param kwargs:
         :return:
         """

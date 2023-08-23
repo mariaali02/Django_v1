@@ -408,8 +408,8 @@
                                     <td>Gender</td>
                                     <td>
                                         <select name="gender" id="selGender">
-                                            <option value="male">Male</option>
-                                            <option value="female">Female</option>
+                                            <option value="Male">M</option>
+                                            <option value="Female">F</option>
                                             <option value="other">Other</option>
                                         </select>
                                     </td>
@@ -533,6 +533,22 @@
             });
         }
         
+        function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+    
         function updateUser() {
             var csrftokenget = getCookie('csrftoken');
             formValidation();
@@ -544,56 +560,66 @@
                 });
             
             var baseUrl = "http://127.0.0.1:8000/apitest/userdetail"; // Base URL of your Django API
-            
-            var userData = {
-                userId:$('#lblUserId').val(),
-                user: $('#txtUserName').val(),
-                email: $('#txtEmail').val(),
-                date_of_birth: $('#txtdob').val(),
-                gender: $('#selGender').val(),
-                phone_number: $('#txtPhone').val()
-            };
+            var userId = $('input#lblUserId').val()
+            var email = $('input#txtEmail').val()
+            var username = $('input#txtUserName').val()
+            var date_of_birth = $('input#txtdob').val()
+            var gender = $('select#selGender').val()
+            var phone_number = $('input#txtPhone').val()
+            var Url = baseUrl + `?userId=${userId}` ;
 
             $.ajax({
                 method: 'PUT',
-                url: baseUrl,
-                dataType: "json",
-                data: userData,
-                error: function (xhr, errmsg, err) {
-                    console.log('Error:', err);
+                url: Url, // Use the 'Url' variable containing the complete URL
+                dataType: 'application/json',
+                data:{'email' : email,
+                'username':username,
+                'date_of_birth':date_of_birth,
+                'gender':gender,
+                'phone_number':phone_number
+            },
+                dataType: 'json',
+                error: function(xhr, errmsg, err) {
+                    console.log('Error updating user:', xhr.responseJSON);
                 },
-                complete: function (xhr, errmsg, err) {
-                    console.log('JSON Data:', xhr.responseJSON);
-                    alert('User data updated successfully');
+                complete: function(xhr, errmsg, err){
+                /* $('input#txtUserName').val(xhr.responseJSON[0]["username"])
+                    $('input#txtEmail').val(xhr.responseJSON[0]["email"])
+                    $('input#lblUserId').val(xhr.responseJSON[0]["id"])
+                    $('input#txtdob').val(xhr.responseJSON[0]["dob"])*/
+                
+                    alert('User updated successfully!');
                 },
-                success: function (xhr, errmsg, err) {
-                    console.log('Success:', xhr);
-                },
-            });
-        }
+                success:  function(xhr, errmsg, err){},
+                
+            })
+        } 
 
         function formValidation() {
             var username = document.getElementById("txtUserName").value;
             var email = document.getElementById("txtEmail").value;
             var usernameError = document.getElementById("username-error");
             var emailError = document.getElementById("email-error");
-
+        
             usernameError.innerHTML = "";
             emailError.innerHTML = "";
-
+        
             var usernamePattern = /^[a-zA-Z0-9_]+$/;
-            if (!username.match(usernamePattern)) {
-                usernameError.innerHTML = "INVALID";
-                return false; // Prevent form submission if the username is invalid
-            }
-    
             var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-            if (!email.match(emailPattern)) {
-                emailError.innerHTML = "Please enter a valid email.";
-                return false;
+        
+            if (username.trim() === "" || username.match(usernamePattern)) {
+                if (email.trim() === "" || email.match(emailPattern)) {
+                    return true; // Form can be submitted
+                } else {
+                    emailError.innerHTML = "Please enter a valid email.";
+                    return false; // Prevent form submission due to invalid email
+                }
+            } else {
+                usernameError.innerHTML = "INVALID";
+                return false; // Prevent form submission due to invalid username
             }
-            return true;
-        } 
+        }
+        
         function ShowUpdateView(userId) {
             document.getElementById('divUpdateForm').style.display = 'block';
             getdata(userId);
