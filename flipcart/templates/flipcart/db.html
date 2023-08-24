@@ -42,7 +42,6 @@
                             <td>
                                 <button onclick="deleteUser(${userData.userId})">Delete</button>
                                 <button onclick="ShowUpdateView(${userData.userId})">Edit</button>
-                                <button type="button" onclick="removedata()">Remove</button>
                             </td>
                         </tr>`     
 
@@ -408,8 +407,8 @@
                                     <td>Gender</td>
                                     <td>
                                         <select name="gender" id="selGender">
-                                            <option value="Male">M</option>
-                                            <option value="Female">F</option>
+                                            <option value="M">Male</option>
+                                            <option value="F">Female</option>
                                             <option value="other">Other</option>
                                         </select>
                                     </td>
@@ -520,7 +519,7 @@
                     $('input#txtUserName').val(userData.user);
                     $('input#txtEmail').val(userData.email);
                     $('input#txtdob').val(userData.date_of_birth);
-                    $('input#lblUserId').val(userData.userId);
+                    $('input#lblUserId').val(userId);
                     $('input#txtEmail').val(userData.email);
                     $('input#txtPhone').val(userData.phone_number); // Assuming the ID for the Phone Number input is 'txtPhone'
                     $('select#selGender').val(userData.gender); // Assuming the ID for the Gender select is 'selGender'
@@ -549,52 +548,51 @@
                 return cookieValue;
             }
     
-        function updateUser() {
-            var csrftokenget = getCookie('csrftoken');
-            formValidation();
-
-                $.ajaxSetup({
-                    beforeSend: function (xhr, settings) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftokenget);
-                    }
-                });
-            
-            var baseUrl = "http://127.0.0.1:8000/apitest/userdetail"; // Base URL of your Django API
-            var userId = $('input#lblUserId').val()
-            var email = $('input#txtEmail').val()
-            var username = $('input#txtUserName').val()
-            var date_of_birth = $('input#txtdob').val()
-            var gender = $('select#selGender').val()
-            var phone_number = $('input#txtPhone').val()
-            var Url = baseUrl + `?userId=${userId}` ;
-
-            $.ajax({
-                method: 'PUT',
-                url: Url, // Use the 'Url' variable containing the complete URL
-                dataType: 'application/json',
-                data:{'email' : email,
-                'username':username,
-                'date_of_birth':date_of_birth,
-                'gender':gender,
-                'phone_number':phone_number
-            },
-                dataType: 'json',
-                error: function(xhr, errmsg, err) {
-                    console.log('Error updating user:', xhr.responseJSON);
-                },
-                complete: function(xhr, errmsg, err){
-                /* $('input#txtUserName').val(xhr.responseJSON[0]["username"])
-                    $('input#txtEmail').val(xhr.responseJSON[0]["email"])
-                    $('input#lblUserId').val(xhr.responseJSON[0]["id"])
-                    $('input#txtdob').val(xhr.responseJSON[0]["dob"])*/
+            function updateUser() {
+                var csrftokenget = getCookie('csrftoken');
+                formValidation();
+    
+                    $.ajaxSetup({
+                        beforeSend: function (xhr, settings) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftokenget);
+                        }
+                    });
                 
-                    alert('User updated successfully!');
+                var baseUrl = "http://127.0.0.1:8000/apitest/userdetail"; // Base URL of your Django API
+                var userId = $('input#lblUserId').val()
+                var email = $('input#txtEmail').val()
+                var username = $('input#txtUserName').val()
+                var date_of_birth = $('input#txtdob').val()
+                var gender = $('select#selGender').val()
+                var phone_number = $('input#txtPhone').val()
+                var Url = baseUrl + `?userId=${userId}` ;
+    
+                $.ajax({
+                    method: 'PUT',
+                    url: Url, // Use the 'Url' variable containing the complete URL
+                    dataType: 'application/json',
+                    data:{'email' : email,
+                    'username':username,
+                    'date_of_birth':date_of_birth,
+                    'gender':gender,
+                    'phone_number':phone_number
                 },
-                success:  function(xhr, errmsg, err){},
-                
-            })
-        } 
+                    dataType: 'json',
+                    complete: function(xhr, errmsg, err){
+                    /* $('input#txtUserName').val(xhr.responseJSON[0]["username"])
+                        $('input#txtEmail').val(xhr.responseJSON[0]["email"])
+                        $('input#lblUserId').val(xhr.responseJSON[0]["id"])
+                        $('input#txtdob').val(xhr.responseJSON[0]["dob"])*/
+                    
+                        alert('User updated successfully!');
+                    },
+                    success:  function(xhr, errmsg, err){},
+                    
+                })
+            } 
 
+        
+        
         function formValidation() {
             var username = document.getElementById("txtUserName").value;
             var email = document.getElementById("txtEmail").value;

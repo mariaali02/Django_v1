@@ -163,12 +163,11 @@ class UserDetail1(APIView):
             proUser["gender"] = request.data['gender']
         if 'phone_number' in request.data:
             proUser["phone_number"] = request.data['phone_number']
-        try:
+        
             if userId:
                 collectionUser = User.objects.filter(pk=userId)
                 res = collectionUser.update(**dicUser)
                 objUserProfile =  UserProfile.objects.filter(user= collectionUser.first().id)
-                res =  objUserProfile.update(**proUser)
                 if  objUserProfile.exists():
                     res =  objUserProfile.update(**proUser)
                 else:
@@ -178,13 +177,12 @@ class UserDetail1(APIView):
                 # serializer = UserSerializer(objUser, data=request.data)
                 # if serializer.is_valid():
                 #     serializer.save(5)
-                    return Response({'message': 'saved successfully.'}, status=status.HTTP_205_RESET_CONTENT)
+                    return Response({'message': 'saved successfully.'}, status=status.HTTP_200_RESET_CONTENT)
             else:
                 return Response({'message': 'error.'}, status=status.HTTP_400_BAD_REQUEST)
 
             #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as ex:
-            return Response({'message': 'error.'}, status=status.HTTP_400_BAD_REQUEST)
+    
 
     def delete(self, request, format=None):   
         if request.method == "DELETE":
@@ -251,53 +249,39 @@ class UserDetail1(APIView):
         )
         msg.attach_alternative(email_html_message, "text/html")
         msg.send()
-
+        
 class registeruser(APIView):
     permission_classes = [permissions.AllowAny]
     authentication_classes = ()
 
     def post(self, request, format=None):
         if request.method == 'POST':
-            objUser = User.objects.create_user(username=request.data["username"], password=request.data["password"], email = request.data["email"],
-            date_of_birth_str = UserProfile.request.data["date_of_birth"], gender = UserProfile.request.data["gender"],phone_number = UserProfile.request.data["phone_number"])
-            
-            #serializer = RegisterSerializer(data=request.data)
-            #if serializer.is_valid():
-            #    serializer.save()
-            #return JsonResponse(serializer.data, status=201) 
-        # Assuming you have already created a User object with pk=65
-        #objUser = User.objects.get(pk=65)
-    
-        # Convert the date string to a datetime.date object
+            objUser = User.objects.create_user(
+                username=request.data["username"],
+                password=request.data["password"],
+                email=request.data["email"]
+            )
+
             email = request.data.get('email')
             date_of_birth_str = request.data.get('date_of_birth')
-            date_of_birth = datetime.strptime(date_of_birth_str, "%Y-%m-%d").date()
+            date_of_birth = datetime.strptime(date_of_birth_str, "%m/%d/%Y").date()
             gender = request.data.get('gender')
             phone_number = request.data.get('phone_number')
+
             objUserProfile = UserProfile.objects.create(
                 user=objUser,
-                Email = email,
-                date_of_birth= date_of_birth ,
+                Email=email,
+                date_of_birth=date_of_birth ,
                 gender=gender,
                 phone_number=phone_number
             )
+
             objUserProfile.save()
-            print("User profile created:", objUserProfile)
-            
+
             return JsonResponse({'message': 'User profile created successfully.'}, status=201)
-        return JsonResponse({'detail': 'Invalid request method'}, status=405)  # Return an error for other request methods
+        
+        return JsonResponse({'detail': 'Invalid request method'}, status=405)
 
-    def get(self, request, format=None):
-            
-            userId = int(request.GET['userId']) if 'userId' in request.GET else None
-
-            if userId:
-                queryset = UserProfile.objects.filter(pk=userId)
-            else:
-                queryset = UserProfile.objects.all()
-            serializer = UserSerializer(queryset, many=True)
-
-            return Response(serializer.data)
 
 class SignIn(APIView):
     authentication_classes = ()
