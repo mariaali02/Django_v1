@@ -69,7 +69,7 @@ class UserDetail1(APIView):
 
         if userId:
             try:
-                objUser = User.objects.get(pk=userId)
+                objUser = User.objects.get(pk=userId ,deleted=False)
                 objUserProfile = UserProfile.objects.filter(user=objUser).first()
 
                 serializer_user = UserSerializer(objUser)
@@ -87,7 +87,7 @@ class UserDetail1(APIView):
                 return Response({'error': 'User not found'}, status=404)
         else:
             try:
-                collectionUser = User.objects.all()
+                collectionUser = User.objects.all().exclude(deleted = True)
                 data = []
                 for objUser in collectionUser:
                     objUserProfile = UserProfile.objects.filter(user=objUser.id).first()
@@ -182,21 +182,6 @@ class UserDetail1(APIView):
                 return Response({'message': 'error.'}, status=status.HTTP_400_BAD_REQUEST)
 
             #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-
-    def delete(self, request, format=None):   
-        if request.method == "DELETE":
-            try:
-                user_id = int(request.GET.get('userId'))
-                objuser = User.objects.get(id=user_id)
-                objuser.delete()
-                return Response({"message": "User deleted successfully"}, status=200)
-            except User.DoesNotExist:
-                return Response({"message": "User not found"}, status=404)
-            except ValueError:
-                return Response({"message": "Invalid user ID"}, status=400)
-        else:
-            return Response({"message": "Invalid request method"}, status=400)
     def post(self, request, format=None):  
         if request.method == 'POST':
             serializer = ChangePasswordSerializer(data=request.data)
@@ -264,7 +249,7 @@ class registeruser(APIView):
 
             email = request.data.get('email')
             date_of_birth_str = request.data.get('date_of_birth')
-            date_of_birth = datetime.strptime(date_of_birth_str, "%m/%d/%Y").date()
+            date_of_birth = datetime.strptime(date_of_birth_str, "%Y-%m-%d").date()
             gender = request.data.get('gender')
             phone_number = request.data.get('phone_number')
 
@@ -375,3 +360,19 @@ class Hello(APIView):
             'message': 'Hello World'
         }
         return Response(content)
+    
+class SoftDeleteUser(APIView):
+    def delete(self, request, format=None):
+        if request.method == "DELETE":
+            try:
+                user_id = int(request.GET.get('userId'))
+                deleted_by_user = request.user  # Get the user who is performing the deletion
+                objUserProfile = UserProfile.objects.get(id=user_id)
+                objUserProfile.soft_delete(deleted_by_user)
+                return Response({"message": "User soft deleted successfully"}, status=200)
+            except UserProfile.DoesNotExist:
+                return Response({"message": "User not found"}, status=404)
+            except ValueError:
+                return Response({"message": "Invalid user ID"}, status=400)
+        else:
+            return Response({"message": "Invalid request method"}, status=400)

@@ -97,8 +97,8 @@
                     <td><span id="email-error" class="error"></span></td>
                 </tr>
                 <tr>
-                    <td><label for="date_of_birth ">Date Of Birth:</label></td>
-                    <td><input type="date" name="date_of_birth " id="date_of_birth "></td>
+                    <td><label for="date_of_birth">Date Of Birth:</label></td>
+                    <td><input type="date" name="date_of_birth" id="date_of_birth"></td>
                 </tr>
                 <tr>
                     <td></td>
@@ -108,8 +108,8 @@
                     <td><label for="gender">Gender:</label></td>
                     <td>
                         <select name="gender" id="gender">
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
                             <option value="other">Other</option>
                         </select>
                     </td>
@@ -182,10 +182,10 @@
             username: $('#username').val(),
             email: $('#email').val(),
             password: $('#password').val(),
-            date_of_birth : $('#date_of_birth ').val(),
+            date_of_birth : $('#date_of_birth').val(),
             cpassword: $('#cpassword').val(),
             gender: $('#gender').val(),       
-            phone: $('#phone').val() 
+            phone_number: $('#phone').val() 
         };
 
         $.ajax({
@@ -208,7 +208,7 @@
     $(document).ready(function () {
         $('#registrationForm').submit(function (event) {
             event.preventDefault();
-            RegisterUser();
+            
         });
     });
 
@@ -218,7 +218,7 @@
             var email = document.getElementById("email").value;
             var password = document.getElementById("password").value;
             var cPassword = document.getElementById("cpassword").value;
-            var date_of_birth  = document.getElementById("date_of_birth ").value;
+            var date_of_birth  = document.getElementById("date_of_birth").value;
             var usernameError = document.getElementById("username-error");
             var emailError = document.getElementById("email-error");
             var passwordError = document.getElementById("password-error");

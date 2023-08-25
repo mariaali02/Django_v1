@@ -13,6 +13,7 @@ urlpatterns = [
     path('hello', views.Hello.as_view()),
     path('userdetail', views.UserDetail1.as_view()),
     path('registeruser/', views.registeruser.as_view(), name='registeruser'),
+    path('SoftDeleteUser/', views.SoftDeleteUser.as_view(), name='SoftDeleteUser'),
     path('SignIn/', views.SignIn.as_view(), name='SignIn'),
     path('UserDashboard/', views.UserDashboard, name='UserDashboard'),
     path('SuperuserDashboard/', views.SuperuserDashboard, name='SuperuserDashboard'),
