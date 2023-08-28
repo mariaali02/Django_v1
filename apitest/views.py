@@ -3,6 +3,7 @@ from datetime import datetime
 from flipcart.models import UserProfile
 from rest_framework import generics, permissions
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from rest_framework.response import Response
@@ -69,8 +70,8 @@ class UserDetail1(APIView):
 
         if userId:
             try:
-                objUser = User.objects.get(pk=userId ,deleted=False)
-                objUserProfile = UserProfile.objects.filter(user=objUser).first()
+                objUser = User.objects.get(pk=userId)
+                objUserProfile = UserProfile.objects.filter(user=objUser,deleted =False).first()
 
                 serializer_user = UserSerializer(objUser)
                 serializer_profile = UserProfileSerializer(objUserProfile)
@@ -87,15 +88,15 @@ class UserDetail1(APIView):
                 return Response({'error': 'User not found'}, status=404)
         else:
             try:
-                collectionUser = User.objects.all().exclude(deleted = True)
+                collectionUser = UserProfile.objects.filter(deleted =False)
                 data = []
-                for objUser in collectionUser:
-                    objUserProfile = UserProfile.objects.filter(user=objUser.id).first()
+                for  objUserProfile in collectionUser:
+        
                     content = {
                         
-                        'userId':objUser.id,
-                        'user' : objUser.username,
-                        'email' : objUser.email,
+                        'userId':objUserProfile.user.id,
+                        'username' : objUserProfile.user.username,
+                        'email' : objUserProfile.user.email,
                         'date_of_birth' : objUserProfile.date_of_birth if objUserProfile else None,
                         'gender': objUserProfile.gender if objUserProfile else None,
                         'phone_number': str(objUserProfile.phone_number) if objUserProfile else None
@@ -177,11 +178,16 @@ class UserDetail1(APIView):
                 # serializer = UserSerializer(objUser, data=request.data)
                 # if serializer.is_valid():
                 #     serializer.save(5)
-                    return Response({'message': 'saved successfully.'}, status=status.HTTP_200_RESET_CONTENT)
+                    return Response({'message': 'saved successfully.'}, status.HTTP_200_OK)
             else:
                 return Response({'message': 'error.'}, status=status.HTTP_400_BAD_REQUEST)
 
             #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ChangePassword(APIView):
+    authentication_classes = [SessionAuthentication]  # Use the appropriate authentication class
+    permission_classes = [IsAuthenticated]  # Ensure only authenticated users can access
+
     def post(self, request, format=None):  
         if request.method == 'POST':
             serializer = ChangePasswordSerializer(data=request.data)
@@ -191,10 +197,11 @@ class UserDetail1(APIView):
                     user.set_password(serializer.data.get('new_password'))
                     user.save()
                     update_session_auth_hash(request, user)  # To update session after password change
-                    return Response({'message': 'Password changed successfully.'}, status=status.HTTP_200_OK)
+                    url_success = reverse('UserDashboard') 
+                    return Response({'message': 'Password changed successfully.','url': url_success})
                 return Response({'error': 'Incorrect old password.'}, status=status.HTTP_400_BAD_REQUEST)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+        
     @receiver(reset_password_token_created)
     def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
         """
@@ -255,7 +262,7 @@ class registeruser(APIView):
 
             objUserProfile = UserProfile.objects.create(
                 user=objUser,
-                Email=email,
+                email=email,
                 date_of_birth=date_of_birth ,
                 gender=gender,
                 phone_number=phone_number
@@ -288,6 +295,7 @@ class SignIn(APIView):
                         return Response({'message': 'User sign-in successful', 'url': url_success})
 
             return Response({'message': 'Sign-in failed'}, status=status.HTTP_401_UNAUTHORIZED)
+        
 def UserDashboard(request):
     users = User.objects.all()
 
@@ -297,6 +305,7 @@ def UserDashboard(request):
     }
 
     return render(request, 'flipcart/db.html', context)
+
 def SuperuserDashboard(request):
     users = User.objects.all()
 
@@ -360,19 +369,18 @@ class Hello(APIView):
             'message': 'Hello World'
         }
         return Response(content)
-    
 class SoftDeleteUser(APIView):
     def delete(self, request, format=None):
-        if request.method == "DELETE":
+        try:
+            user_id = int(request.GET.get('userId'))
+            deleted_by_user = request.user  # Get the user who is performing the deletion
+            
             try:
-                user_id = int(request.GET.get('userId'))
-                deleted_by_user = request.user  # Get the user who is performing the deletion
-                objUserProfile = UserProfile.objects.get(id=user_id)
+                objUserProfile = UserProfile.objects.get(user_id=user_id, deleted=False)
                 objUserProfile.soft_delete(deleted_by_user)
-                return Response({"message": "User soft deleted successfully"}, status=200)
+                return Response({"message": "User soft deleted successfully"}, status=status.HTTP_200_OK)
             except UserProfile.DoesNotExist:
-                return Response({"message": "User not found"}, status=404)
-            except ValueError:
-                return Response({"message": "Invalid user ID"}, status=400)
-        else:
-            return Response({"message": "Invalid request method"}, status=400)
+                return Response({"message": "User not found or already soft deleted"}, status=status.HTTP_404_NOT_FOUND)
+        except ValueError:
+            return Response({"message": "Invalid user ID"}, status=status.HTTP_400_BAD_REQUEST)
+

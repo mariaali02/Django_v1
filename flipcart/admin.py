@@ -4,5 +4,5 @@ from .models import UserProfile
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'date_of_birth', 'gender', 'phone_number', 'Email']
+    list_display = ['user', 'date_of_birth', 'gender', 'phone_number', 'email']
 

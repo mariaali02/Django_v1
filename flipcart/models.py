@@ -1,11 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
+
 from django.utils import timezone
 from phonenumber_field.modelfields import PhoneNumberField
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    Email = models.EmailField(null=True,max_length=254)
+
+    email = models.EmailField(null=True,max_length=254)
     date_of_birth = models.DateField( null=True, blank=True)
     GENDER_CHOICES = (
         ('M', 'Male'),
@@ -18,7 +20,7 @@ class UserProfile(models.Model):
         region="PK",  # Set the default region to Pakistan
     )
     deleted = models.BooleanField(default=False)
-    deleted_by = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='deleted_users', null=True)
+    deleted_by = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='deleted_users', null=True ,blank=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
 
     # Other methods and fields ...

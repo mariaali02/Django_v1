@@ -12,6 +12,7 @@ urlpatterns = [
     path('UserProfile/<int:pk>/', views.UserProfileView.as_view(), name='userprofile-detail'),
     path('hello', views.Hello.as_view()),
     path('userdetail', views.UserDetail1.as_view()),
+    path('ChangePassword/', views.ChangePassword.as_view(), name='ChangePassword'),
     path('registeruser/', views.registeruser.as_view(), name='registeruser'),
     path('SoftDeleteUser/', views.SoftDeleteUser.as_view(), name='SoftDeleteUser'),
     path('SignIn/', views.SignIn.as_view(), name='SignIn'),

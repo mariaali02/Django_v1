@@ -34,7 +34,7 @@
                         $('tbody#tblmydata').append(
                         `<tr>
                             <td>${userData.userId}</td>
-                            <td>${ userData.user }</td>
+                            <td>${ userData.username }</td>
                             <td>${ userData.email }</td>
                             <td> ${ userData.date_of_birth}</td>
                             <td> ${ userData.gender }</td>
@@ -43,6 +43,43 @@
                                 <button onclick="deleteUser(${userData.userId})">Delete</button>
                                 <button onclick="ShowUpdateView(${userData.userId})">Edit</button>
                             </td>
+                        </tr>`     
+
+                        
+                        )
+                    }
+                },
+            });
+        }
+
+        function getalldata() {
+            var baseUrl = "http://127.0.0.1:8000/apitest/userdetail";
+            $.ajax({
+                method: 'GET',
+                url: baseUrl,
+                dataType: "json",
+                data: { },
+                error: function (xhr, errmsg, err) {
+                    console.log('Error:', err);
+                },
+                complete: function (xhr, errmsg, err) {
+            
+                    console.log('JSON Data:', xhr.responseJSON);
+                },
+                success: function (xhr, errmsg, err) {
+                    console.log('Success:', xhr);
+                    $('tbody#t2blmydata').children().remove();
+                    for (i=0; i < xhr.data.length; i++){
+                        const userData = xhr.data[i];
+                        $('tbody#t2blmydata').append(
+                        `<tr>
+                            <td>${userData.userId}</td>
+                            <td>${ userData.username }</td>
+                            <td>${ userData.email }</td>
+                            <td> ${ userData.date_of_birth}</td>
+                            <td> ${ userData.gender }</td>
+                            <td> ${ userData.phone_number}</td>
+                            <td>
                         </tr>`     
 
                         
@@ -77,7 +114,7 @@
                     // You can perform additional actions here after successful deletion
                 },
                 error: function (xhr, errmsg, err) {
-                    alert('Failed to delete user: ' + xhr.responseJSON.message);
+                    alert('Failed to delete user: ');
                 }
             });
         }                 
@@ -414,7 +451,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td></td>"http://127.0.0.1:8000/apitest/registeruser/";
+                                    <td></td>
                                     <td><span id="gender-error" class="error"></span></td>
                                 </tr>
                                 <tr>
@@ -450,27 +487,14 @@
                             <th>ID</th>
                             <th>Username</th>
                             <th>Email</th>
-                            <th>Date of Joining</th>
                             <th>Date of Birth</th>
                             <th>Gender</th>
                             <th>Phone Number</th>
-                            
                         </tr>
                     </thead>
                     
                     <tbody>
-                        {% for user in users %}
-                            <tr>
-                                <td>{{ user.id }}</td>
-                                <td>{{ user.username }}</td>
-                                <td>{{ user.email }}</td>
-                                <td>{{ user.date_joined }}</td>
-                                <td>{{ user.date_of_birth  }}</td>
-                                <td>{{ user.gender}}</td>
-                                <td>{{ user.phone_number}}</td>
-                            </tr> 
-                            {% endfor %}
-                        </tbody>
+                        <tbody id = "t2blmydata">
                     </table>
 
                 <button class="signout-btn" onclick="userLogout()">Sign Out</button>
