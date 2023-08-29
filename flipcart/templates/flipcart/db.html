@@ -31,6 +31,7 @@
                     $('tbody#tblmydata').children().remove();
                     for (i=0; i < xhr.data.length; i++){
                         const userData = xhr.data[i];
+                
                         $('tbody#tblmydata').append(
                         `<tr>
                             <td>${userData.userId}</td>
@@ -39,49 +40,15 @@
                             <td> ${ userData.date_of_birth}</td>
                             <td> ${ userData.gender }</td>
                             <td> ${ userData.phone_number}</td>
-                            <td>
+                            <td> 
+                                {% if user.is_superuser %}
                                 <button onclick="deleteUser(${userData.userId})">Delete</button>
                                 <button onclick="ShowUpdateView(${userData.userId})">Edit</button>
+                                {% endif %}
                             </td>
-                        </tr>`     
-
+                        </tr>` 
                         
-                        )
-                    }
-                },
-            });
-        }
-
-        function getalldata() {
-            var baseUrl = "http://127.0.0.1:8000/apitest/userdetail";
-            $.ajax({
-                method: 'GET',
-                url: baseUrl,
-                dataType: "json",
-                data: { },
-                error: function (xhr, errmsg, err) {
-                    console.log('Error:', err);
-                },
-                complete: function (xhr, errmsg, err) {
-            
-                    console.log('JSON Data:', xhr.responseJSON);
-                },
-                success: function (xhr, errmsg, err) {
-                    console.log('Success:', xhr);
-                    $('tbody#t2blmydata').children().remove();
-                    for (i=0; i < xhr.data.length; i++){
-                        const userData = xhr.data[i];
-                        $('tbody#t2blmydata').append(
-                        `<tr>
-                            <td>${userData.userId}</td>
-                            <td>${ userData.username }</td>
-                            <td>${ userData.email }</td>
-                            <td> ${ userData.date_of_birth}</td>
-                            <td> ${ userData.gender }</td>
-                            <td> ${ userData.phone_number}</td>
-                            <td>
-                        </tr>`     
-
+                        
                         
                         )
                     }
@@ -89,10 +56,13 @@
             });
         }
         
+
+        
         function removedata() {
             alert('empty');
             $('tbody#tblmydata').empty()
         }
+
         function deleteUser(userId) {
             const csrftoken = getCookie('csrftoken');
         
@@ -344,14 +314,14 @@
                             <th>Date of Birth</th>
                             <th>Gender</th>
                             <th>Phone Number</th>
-                            {% if can_delete_update %}
+                            {% if user.is_superuser %}
                                 <th>Actions</th>
                             {% endif %}
                         </tr>
                     </thead>
                     <tbody id = "tblmydata">
 
-<!--
+<!--   
                 </tbody>
                     </table>
                 <table>
@@ -493,8 +463,7 @@
                         </tr>
                     </thead>
                     
-                    <tbody>
-                        <tbody id = "t2blmydata">
+                        <tbody id = "tblmydata">
                     </table>
 
                 <button class="signout-btn" onclick="userLogout()">Sign Out</button>

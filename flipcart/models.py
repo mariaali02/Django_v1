@@ -6,7 +6,6 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
     email = models.EmailField(null=True,max_length=254)
     date_of_birth = models.DateField( null=True, blank=True)
     GENDER_CHOICES = (

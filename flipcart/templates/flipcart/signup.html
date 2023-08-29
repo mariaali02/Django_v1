@@ -167,8 +167,14 @@
 
     function RegisterUser() {
         alert("register");
+        var isValid = formValidation(); // Check if form data is valid
+
+        if (!isValid) {
+            return; // Exit registration if form data is not valid
+        }
+
         var csrftokenget = getCookie('csrftoken');
-            formValidation();
+            
 
                 $.ajaxSetup({
                         beforeSend: function (xhr, settings) {
