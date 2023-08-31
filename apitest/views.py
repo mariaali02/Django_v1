@@ -279,7 +279,10 @@ class registeruser(APIView):
 
 class SignIn(APIView):
     #authentication_classes = ()
+<<<<<<< HEAD
 
+=======
+>>>>>>> 849425f (created footer and resolved errors)
 
     def post(self, request, format=None):
         _userName = request.data['username'] if 'username' in request.data else None
