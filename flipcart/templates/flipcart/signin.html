@@ -111,7 +111,7 @@
             }
     
         function UserLogin() {
-            alert("register");
+            //alert("register");
             var csrftokenget = getCookie('csrftoken');
                 
     
@@ -134,8 +134,8 @@
                 data: formData,
                 dataType: 'json',
                 success: function (data) {
-                    alert('login successful!');
-                        window.location.href = data.url;
+                    //alert('login successful!');
+                    window.location.href = data.url;
                 },
                 error: function (xhr, status, error) {
                     var errorMessage = xhr.responseJSON ? xhr.responseJSON.error : 'An error occurred';

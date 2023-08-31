@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{% static 'staticfiles/css/header.css' %}">
     <link rel="script" href="{% static 'staticfiles/script/myscript.js' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
     <div class="header">
@@ -19,6 +20,6 @@
         <button class="signout-btn" onclick="userLogout()">SIGNOUT</button>
     </div>
     
-    <script src="" async defer></script>
+    <script src="{% static 'staticfiles/script/myscript.js' %}" async defer></script>
 </body>
 </html>

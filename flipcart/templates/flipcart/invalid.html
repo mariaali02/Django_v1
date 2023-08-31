@@ -128,7 +128,7 @@
             var email = document.getElementById("txtEmail").value;
             password();
             if (email === "") {
-                alert("Email is required.");
+                //alert("Email is required.");
             } else {
                 var baseUrl = "http://127.0.0.1:8000/apitest/password/reset/"; // Update the URL
                 var requestData = {
@@ -141,10 +141,10 @@
                     dataType: 'json',
                     data: requestData,
                     success: function(data) {
-                        alert("Password reset email sent successfully.");
+                        //alert("Password reset email sent successfully.");
                     },
                     error: function(xhr, status, error) {
-                        alert("Error sending password reset email.");
+                        //alert("Error sending password reset email.");
                         console.error(error);
                     }
                 });

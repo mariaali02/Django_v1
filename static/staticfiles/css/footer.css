@@ -1,0 +1,39 @@
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    background-color: green;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.footer h1,
+.footer h2,
+.footer h3 {
+    flex: 1; /* Equal distribution of width */
+    font-size: 15px;
+    color: black;
+    padding: 20px;
+    text-align: center;
+}
+
+.footer h2 {
+    text-transform: uppercase;
+    font-size: 15px;
+    color: black;
+    margin: 10px;
+    padding: 5px;
+    color: black;
+    border: none;
+    cursor: pointer;
+}
+
+.footer h3 {
+    font-size: 18px;
+    color:black;
+    margin: 10px;
+}
+

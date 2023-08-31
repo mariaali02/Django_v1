@@ -63,9 +63,11 @@ class UserProfileListView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 class UserDetail1(APIView):
-    authentication_classes = ()
-    permission_classes = [permissions.AllowAny]
+    # authentication_classes = ()
+    permission_classes = [permissions.IsAuthenticated]
     def get(self, request, format=None):
+        print("printing user")
+        print(request.user)
         userId = request.GET.get('userId')
 
         if userId:
@@ -93,7 +95,7 @@ class UserDetail1(APIView):
                 for  objUserProfile in collectionUser:
         
                     content = {
-                        
+                    
                         'userId':objUserProfile.user.id,
                         'username' : objUserProfile.user.username,
                         'email' : objUserProfile.user.email,
@@ -102,7 +104,7 @@ class UserDetail1(APIView):
                         'phone_number': str(objUserProfile.phone_number) if objUserProfile else None
                     }
                     data.append(content)
-                return Response({'data': data}, status=200)
+                return Response({'data': data, 'role': request.user.is_superuser}, status=200)
             except User.DoesNotExist:
                 return Response({'error': 'User not found'}, status=404)
 
@@ -276,7 +278,7 @@ class registeruser(APIView):
 
 
 class SignIn(APIView):
-    authentication_classes = ()
+    #authentication_classes = ()
 
     def post(self, request, format=None):
         _userName = request.data['username'] if 'username' in request.data else None

@@ -1,6 +1,6 @@
 .header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     background-color: green;
     position: fixed;
     top: 0;
@@ -18,8 +18,8 @@
     font-size: 15px;
     color: black;
     position: absolute;
-    top: 20px;;
-    right:70px;
+    top: 20px;
+    right:80px;
     margin: 10px;
     padding: 5px ;
     background-color: #559620; /* Adjust the color as needed */
@@ -37,6 +37,7 @@
 }
 .signout-btn {
     position: absolute;
+    font-size: 15px;
     top: 20px;
     right: 0;
     margin: 10px;
@@ -77,13 +78,15 @@
 }
 
 table {
-    color: white;
+    color: rgb(17, 14, 14);
     border-collapse: collapse;
-    width: 100%;
+    width:100%;
+    table-layout: fixed; /* Set a fixed layout */
 }
 
+
 th, td {
-    border: 2px solid white;
+    border: 2px solid rgb(19, 15, 15);
     padding: 10px;
     text-align: left;
 }
@@ -93,13 +96,13 @@ th {
 }
 
 h1 {
-    color: white;
+    color:rgb(17, 15, 15);
     text-align: center;
     font-weight: bold;
 } 
 
 h3 {
-    color: white;
+    color: rgb(10, 10, 10);
     text-align: center;
     font-weight: bold;
 } 
@@ -129,7 +132,7 @@ h3 {
 /* Set a style for all buttons */
 .clearfix-button {
     background-color: #04AA6D;
-    color: white;
+    color: rgb(36, 32, 32);
     padding: 14px 20px;
     margin: 8px 0;
     border: none;
@@ -150,13 +153,13 @@ h3 {
 
 /* Add a color to the cancel button */
 .cancelbtn {
-    background-color: white;
+    background-color: rgb(78, 168, 26);
     color: black;
 }
 
 /* Add a color to the delete button */
 .deletebtn {
-    background-color: white;
+    background-color: rgb(255, 255, 255);
     color: black;
 }
 

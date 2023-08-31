@@ -166,7 +166,7 @@
         }
 
     function RegisterUser() {
-        alert("register");
+        //alert("register");
         var isValid = formValidation(); // Check if form data is valid
 
         if (!isValid) {
@@ -200,7 +200,7 @@
             data: formData,
             dataType: 'json',
             success: function (data) {
-                alert('Registration successful!');
+                //alert('Registration successful!');
                 window.location.href = '/msg/';
                 // Clear form fields or perform any other actions
             },
