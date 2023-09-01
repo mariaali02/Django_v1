@@ -1,0 +1,271 @@
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+    background-color: green;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.header h1 {
+    font-size: 24px;
+    color: black;
+    padding: 20px;
+}
+.header h2 {
+    text-transform: uppercase;
+    font-size: 15px;
+    color: black;
+    position: absolute;
+    top: 20px;
+    right:80px;
+    margin: 10px;
+    padding: 5px ;
+    background-color: #559620; /* Adjust the color as needed */
+    color: black;
+    border: none;
+    cursor: pointer;
+}
+.header-logo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 50px;
+    width: 100px; /* Adjust the width as needed */
+    height: 60px; /* Adjust the height as needed */
+}
+.signout-btn {
+    position: absolute;
+    font-size: 15px;
+    top: 20px;
+    right: 0;
+    margin: 10px;
+    padding: 5px ;
+    background-color: #4b9b0af1; /* Adjust the color as needed */
+    color: black;
+    border: none;
+    cursor: pointer;
+}
+.body {
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: rgb(39, 25, 25);
+    font-family: Arial, sans-serif;
+    padding: 0; /* Remove padding to span the whole page */
+}
+.container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.title {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.subtitle {
+    font-size: 20px;
+    margin-top: 20px;
+}
+
+.message {
+    margin-top: 20px;
+}
+
+table {
+    color: rgb(17, 14, 14);
+    border-collapse: collapse;
+    width:100%;
+    table-layout: fixed; /* Set a fixed layout */
+}
+
+
+th, td {
+    border: 2px solid rgb(19, 15, 15);
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: green;
+}
+
+h1 {
+    color:rgb(17, 15, 15);
+    text-align: center;
+    font-weight: bold;
+} 
+
+h3 {
+    color: rgb(10, 10, 10);
+    text-align: center;
+    font-weight: bold;
+} 
+
+
+
+.change_password {
+    color: black;
+    position: fixed;
+    bottom: 20px;
+    left: 100px;
+    margin-top: 20px;
+}
+
+/* Remove the spaces in the class names */
+.functionShow {
+    height: 0px;
+    display: block;
+    display: none;
+}
+
+.functionHide {
+    height: 0px;
+    display: none;
+}
+
+/* Set a style for all buttons */
+.clearfix-button {
+    background-color: #04AA6D;
+    color: rgb(36, 32, 32);
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 50%;
+    opacity: 0.9;
+}
+
+.button:hover {
+    opacity: 1;
+}
+/* Your existing styles here */
+
+.cancelbtn, .deletebtn {
+    float: left;
+    width: 50%;
+}
+
+/* Add a color to the cancel button */
+.cancelbtn {
+    background-color: rgb(78, 168, 26);
+    color: black;
+}
+
+/* Add a color to the delete button */
+.deletebtn {
+    background-color: rgb(255, 255, 255);
+    color: black;
+}
+
+/* Add padding and center-align text to the container */
+.container {
+    padding: 16px;
+    text-align: center;
+}
+
+/* The Modal (background) */
+.modal {
+    font-size:20;
+    display: none; /* Hidden by default */
+    position: absolute; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 200;
+    top: 170;
+    width: 30%; /* Full width */
+    height: 30%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: green;
+    padding-top: 0px;
+}
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+    border: 1px solid #888;
+    width: 50%; /* Could be more or less, depending on screen size */
+}
+
+/* Style the horizontal ruler */
+hr {
+    border: 1px solid #f1f1f1;
+    margin-bottom: 20px;
+}
+
+/* The Modal Close Button (x) */
+.close {
+    position: absolute;
+    right: 35px;
+    top: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #f1f1f1;
+}
+
+.close:hover,
+.close:focus {
+    color: #f44336;
+    cursor: pointer;
+}
+
+/* Clear floats */
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+/* Change styles for cancel button and delete button on extra small screens */
+@media screen and (max-width: 50px) {
+    .cancelbtn, .deletebtn {
+        width: 30%;
+    }
+}
+
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    background-color: green;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.footer h1,
+.footer h2,
+.footer h3 {
+    flex: 1; /* Equal distribution of width */
+    font-size: 15px;
+    color: black;
+    padding: 20px;
+    text-align: center;
+}
+
+.footer h2 {
+    text-transform: uppercase;
+    font-size: 15px;
+    color: black;
+    margin: 10px;
+    padding: 5px;
+    color: black;
+    border: none;
+    cursor: pointer;
+}
+
+.footer h3 {
+    font-size: 18px;
+    color:black;
+    margin: 10px;
+}
+
+
+

@@ -1,13 +1,8 @@
-{% include "flipcart/header.html" %}
+{% extends "flipcart/base.html" %}
+        <link rel="stylesheet" href="/static/staticfiles/css/main.css">
 
-<!DOCTYPE html>
-<html>
-<head>
-</head>
-<body>
-
+{% block content %}
     <div class="container">
-
         {% if user.is_authenticated %}
             {% if user.is_superuser %}
                 <!-- Superuser Dashboard -->
@@ -182,7 +177,12 @@
             <h3 class="subtitle">Invalid user!</h3>
             <p class="message">Please log in to access the site.</p>
         {% endif %}
-    </div>
-    {% include "flipcart/footer.html" %}
-</body>
-</html>
+    </div>   
+{% endblock %}
+
+
+
+
+
+
+

@@ -280,6 +280,7 @@ class registeruser(APIView):
 class SignIn(APIView):
     #authentication_classes = ()
 
+
     def post(self, request, format=None):
         _userName = request.data['username'] if 'username' in request.data else None
         _password = request.data['password'] if 'password' in request.data else None
