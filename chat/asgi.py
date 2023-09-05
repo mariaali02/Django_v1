@@ -1,18 +1,18 @@
-# asgi.py
-
-import os
-from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
+import amazone.routing
+import os
 from channels.auth import AuthMiddlewareStack
-import chat.routing  # Import your routing configuration
+from django.core.asgi import get_asgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "<your_project_name>.settings")
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'amazone.settings')
+
+
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket": AuthMiddlewareStack(
         URLRouter(
-            chat.routing.websocket_urlpatterns
+            amazone.routing.websocket_urlpatterns
         )
     ),
 })

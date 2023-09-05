@@ -279,11 +279,8 @@ class registeruser(APIView):
 
 class SignIn(APIView):
     #authentication_classes = ()
-<<<<<<< HEAD
 
-=======
->>>>>>> 849425f (created footer and resolved errors)
-
+    permission_classes = [permissions.IsAuthenticated]
     def post(self, request, format=None):
         _userName = request.data['username'] if 'username' in request.data else None
         _password = request.data['password'] if 'password' in request.data else None

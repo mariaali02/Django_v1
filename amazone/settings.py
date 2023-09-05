@@ -32,6 +32,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,8 +46,9 @@ INSTALLED_APPS = [
     #'rest_framework_api_key',
     'apitest',
     #'knox',
-    'accounts',
+    'chat',
     'django_rest_passwordreset',
+
 
 ]
 
@@ -77,7 +80,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'amazone.wsgi.application'
+#WSGI_APPLICATION = 'amazone.wsgi.application'
+ASGI_APPLICATION = 'amazone.asgi.application'
 
 
 # Database
@@ -141,7 +145,32 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [(os.path.join(BASE_DIR,'static/'))]
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_Root = os.path.join(PROJECT_DIR,'static/')
-# Default primary key field type
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
+
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": os.environ['REDIS_URL'],
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient"
+#         }
+#     }
+# }
+
+
+
+
+
+# Default primary key field typ
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
