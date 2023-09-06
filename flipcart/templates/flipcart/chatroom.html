@@ -1,16 +1,97 @@
-<!-- chat/templates/chat/room.html -->
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8"/>
-    <title>Chat Room</title>
+    {% include "flipcart/header.html" %}
+    <link rel="stylesheet" href="/static/staticfiles/css/main.css">
+</head>
+    <style>
+        /* Center the content vertically and horizontally */
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* 100% of viewport height */
+            margin: 0;
+        }
+
+        /* Style for the chat elements */
+        #chat-log {
+            width: 50%;
+            max-width: 800px; /* Adjust the maximum width as needed */
+            height: 100px;
+            resize: none; /* Disable textarea resizing */
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            overflow-y: auto; /* Add a scrollbar if content overflows */
+        }
+
+        #chat-message-input {
+            width: 100%;
+            max-width: 400px; /* Adjust the maximum width as needed */
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        #chat-message-submit {
+            width: 70%;
+            max-width: 100px; /* Adjust the maximum width as needed */
+            padding: 10px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        #chat-available-user{
+            width: 70%;
+            max-width: 100px; /* Adjust the maximum width as needed */
+            padding: 10px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
     <textarea id="chat-log" cols="100" rows="20"></textarea><br>
     <input id="chat-message-input" type="text" size="100"><br>
     <input id="chat-message-submit" type="button" value="Send">
+    <button id="chat-available-user" onclick="ShowUsers()">Users</button></td>
     {{ room_name|json_script:"room-name" }}
+
+    <div class="available-user" id='divavailableuser' style='display:none;'> 
+    
+        <form id="available-user">
+            {% csrf_token %}
+    
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>chat</th>
+                    </tr>
+                </thead>
+                        <tbody id = "tblmydata">
+            </table>
+    </div>
+    
+
+    
     <script>
+
+
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
         const chatSocket = new WebSocket(
@@ -45,6 +126,52 @@
             }));
             messageInputDom.value = '';
         };
+
+
+function getUsers() {
+    var baseUrl = "http://127.0.0.1:8000/apitest/ShowUsers";
+    $.ajax({
+        method: 'GET',
+        url: baseUrl,
+        dataType: "json",
+        data: { },
+        error: function (xhr, errmsg, err) {
+            console.log('Error:', err);
+        },
+        complete: function (xhr, errmsg, err) {
+    
+            console.log('JSON Data:', xhr.responseJSON);
+        },
+        success: function (xhr, errmsg, err) {
+            console.log('Success:', xhr);
+            $('tbody#tblmydata').children().remove();
+    
+
+
+            for (i=0; i < xhr.data.length; i++){
+                const userData = xhr.data[i];
+            
+                {
+                    `<tr>
+                    <td>${ userData.username }</td>
+
+                </tr>` 
+                }
+            
+                $('tbody#tblmydata').append()
+            }
+        },
+    });
+} 
+
+function ShowUsers() {
+    document.getElementById('divavailableuser').style.display = 'block';
+    getUsers() ;
+    
+}
     </script>
 </body>
+<footer>
+    {% include "flipcart/footer.html" %}
+    </footer>
 </html>

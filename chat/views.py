@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 
-def index(request):
+def indext(request):
     return render(request, 'flipcart/indext.html', {})
 
 

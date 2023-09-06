@@ -20,5 +20,5 @@ urlpatterns = [
     path('SuperuserDashboard/', views.SuperuserDashboard, name='SuperuserDashboard'),
     path('SignOut/', views.SignOut.as_view(), name='SignOut'),
     path('logout/', views.logout ,name='logout'),
-
+    path('ShowUsers/', views.ShowUsers.as_view(), name='ShowUsers'),
 ]
