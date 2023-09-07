@@ -251,9 +251,9 @@ function deleteUser(userId) {
 
                                                                 //LOAD FUNCTION//
 
-    window.onload= function(){
-        getalldata();
-    } 
+    // window.onload= function(){
+    //     getalldata();
+    // } 
 
 
                                                                 //USER LOGOUT //

@@ -388,7 +388,7 @@ class SoftDeleteUser(APIView):
             return Response({"message": "Invalid user ID"}, status=status.HTTP_400_BAD_REQUEST)
 
 class ShowUsers(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
     def get(self, request, format=None):
                 collectionUser = UserProfile.objects.filter(deleted =False)
                 data = []
@@ -396,10 +396,10 @@ class ShowUsers(APIView):
         
                     content = {
                     
-                        
+                        'userId':objUserProfile.user.id,
                         'username' : objUserProfile.user.username,
                         
                     }
                     data.append(content)
-                return Response({'data': data, 'role': request.user.is_superuser}, status=200)
+                return Response({'data': data}, status=200)
     

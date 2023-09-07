@@ -1,60 +1,102 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8"/>
-    <title>Chat Rooms</title>
+    {% include "flipcart/header.html" %}
+
+</head>
     <style>
-        /* Center the content vertically and horizontally */
-        .body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh; /* 100% of viewport height */
-            margin: 0;
-        }
-
-        /* Style for the input and button */
-        .room-name-input {
-            width: 50%;
-            align: center;
-            max-width: 300px; /* Adjust the maximum width as needed */
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .room-name-submit {
-            margin-top: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            align-items: center;
-            background-color: #007BFF;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+        
     </style>
 </head>
 <body>
-    What chat room would you like to enter?<br>
-    <input id="room-name-input" type="text" size="100"><br>
-    <input id="room-name-submit" type="button" value="Enter">
+    <body>
+        <div class="container">
+            <h2>What chat room would you like to enter?</h2>
+            <button id="chat-available-user" class="primary-button" onclick="ShowUsers()">Users</button>
+    
+            <div class="available-user" id="divavailableuser" style="display: none;">
+                <!-- Remove the {% csrf_token %} if not using Django -->
+                <!-- <form id="available-user"> -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Chat</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tb3lmydata">
+                        <!-- Add table rows for user data here -->
+                    </tbody>
+                </table>
+                <!-- Close the form tag if needed -->
+                <!-- </form> -->
+            </div>
+        </div>
+    
 
     <script>
-        document.querySelector('#room-name-input').focus();
-        document.querySelector('#room-name-input').onkeyup = function(e) {
-            if (e.key === 'Enter') {  // enter, return
-                document.querySelector('#room-name-submit').click();
+        {% comment %} document.querySelector('#available-user').focus();
+        document.querySelector('#available-user').onkeyup = function(e) {
+            if (e.key === 'Chat') {  // enter, return
+                document.querySelector('#chat-person').click();
             }
         };
 
-        document.querySelector('#room-name-submit').onclick = function(e) {
-            var roomName = document.querySelector('#room-name-input').value;
+        document.querySelector('#chat-person').onclick = function(e) {
+            var roomName = document.querySelector('#available-user').value;
             window.location.pathname = '/chat/' + roomName + '/';
-        };
+        };  {% endcomment %}
+
+
+        function getUsers() {
+            alert("getdata");
+            var baseUrl = "http://127.0.0.1:8000/apitest/ShowUsers";
+            $.ajax({
+                method: 'GET',
+                url: baseUrl,
+                dataType: "json",
+                data: {},
+                error: function (xhr, errmsg, err) {
+                    console.log('Error:', err);
+                },
+                complete: function (xhr, errmsg, err) {
+                    console.log('JSON Data:', xhr.responseJSON);
+                },
+                success: function (data, textStatus, xhr) {
+                    console.log('Success:', data);
+                    $('tbody#tb3lmydata').empty(); // Clear existing table rows
+                    
+                    for (var i = 0; i < data.data.length; i++) {
+                        const userData = data.data[i];
+                        const row = `
+                            <tr>
+                                <td>${userData.userId}</td>
+                                <td>${userData.username}</td>
+                                <td>
+                                    <a href="{% url 'room' room_name='room_name' %}" class="chat-person">
+                                        <input type="button" value="Chat">
+                                    </a>
+                                </td>
+                            </tr>
+                        `;
+                        $('tbody#tb3lmydata').append(row); // Append the new row to the table
+                    }
+                },
+            });
+        }
+        
+        
+        function ShowUsers() {
+            document.getElementById('divavailableuser').style.display = 'block';
+            getUsers() ;
+            
+        }
+
+
+
     </script>
-</body>
+<footer>
+    {% include "flipcart/footer.html" %}
+    </footer>
 </html>
