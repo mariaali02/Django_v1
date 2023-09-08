@@ -21,12 +21,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
         print("socket is disconneted")
     async def receive(self, text_data):
-        data = json.loads(text_data)
-        message = data['message']
-        recipient_id = data['user_id']  # The ID of the user you want to send the message to
+        text_data_json = json.loads(text_data)
+        message = text_data_json['message']
+        #username = text_data_json['username']
 
-        # Send the message to the recipient user
-        await self.send_message(recipient_id, message)
         await self.channel_layer.group_send(
             self.room_group_name,
             {
