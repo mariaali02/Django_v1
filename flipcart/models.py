@@ -36,7 +36,5 @@ class UserProfile(models.Model):
         self.deleted_at = None
         self.save()
     def __str__(self):
-        return f"UserProfile for {self.user.username}"
-    
-
+        return f"UserProfile for {self.user.username}"    
 
