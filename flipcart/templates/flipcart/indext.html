@@ -34,8 +34,7 @@
             </div>
         </div>
     
-
-    <script>
+<script>
         {% comment %} document.querySelector('#available-user').focus();
         document.querySelector('#available-user').onkeyup = function(e) {
             if (e.key === 'Chat') {  // enter, return
@@ -74,9 +73,10 @@
                                 <td>${userData.userId}</td>
                                 <td>${userData.username}</td>
                                 <td>
-                                    <a href="{% url 'room' room_name='room_name' %}" class="chat-person">
-                                        <input type="button" value="Chat">
+                                    <a href="#" class="chat-person">
+                                        <input type="button" value="Chat" onclick='openChat(${userData.userId})' id="chatbutton">
                                     </a>
+                                    
                                 </td>
                             </tr>
                         `;
@@ -93,9 +93,35 @@
             
         }
 
+        function openChat(userID)
+        {
+            alert(userID)
+            const roomName = 'room_name'; // Replace with the actual room name
 
+            const url = `/room/${roomName}/?userId=${userID}`;
+            window.location.href= url
+        }   
+        // Assuming userData.userId contains the desired user ID
+        // Assuming userData.userId contains the desired user ID
+        document.addEventListener('DOMContentLoaded', function() {
+        // Get a reference to the chat button
+        const chatButton = document.getElementById('chatbutton');
 
-    </script>
+        console.log("chatButton")
+        console.log(chatButton)
+        // Add a click event listener to the button
+        chatButton.addEventListener('click', function() {
+        // Construct the URL using the user ID
+        const userId = userData.userId;
+        const roomName = 'room_name'; // Replace with the actual room name
+        const url = `/room/${roomName}/?userId=${userId}`;
+
+        // Set the href attribute of the parent anchor element to the constructed URL
+        chatButton.parentElement.href = url;
+        });
+        });
+
+</script>
 <footer>
     {% include "flipcart/footer.html" %}
     </footer>
