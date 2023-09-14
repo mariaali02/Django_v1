@@ -2,54 +2,37 @@
 <html>
 <head>
     {% include "flipcart/header.html" %}
-
-</head>
+    <!-- Add any necessary CSS stylesheets here -->
     <style>
-        
+        /* Define your CSS styles here */
     </style>
 </head>
 <body>
-    <body>
-        <div class="container">
-            <h2>What chat room would you like to enter?</h2>
-            <button id="chat-available-user" class="primary-button" onclick="ShowUsers()">Users</button>
-    
-            <div class="available-user" id="divavailableuser" style="display: none;">
-                <!-- Remove the {% csrf_token %} if not using Django -->
-                <!-- <form id="available-user"> -->
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Username</th>
-                            <th>Chat</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tb3lmydata">
-                        <!-- Add table rows for user data here -->
-                    </tbody>
-                </table>
-                <!-- Close the form tag if needed -->
-                <!-- </form> -->
-            </div>
+    <div class="container">
+        <h2>What chat room would you like to enter?</h2>
+        <button id="chat-available-user" class="primary-button" onclick="ShowUsers()">Users</button>
+        <!-- Replace 'your_room_name_here' with the actual room name -->
+        <a href="{% url 'room' room_name='room_name' %}" class="messages-button">Messages</a>
+
+        <div class="available-user" id="divavailableuser" style="display: none;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Chat</th>
+                    </tr>
+                </thead>
+                <tbody id="tb3lmydata">
+                    <!-- Table rows for user data will be added dynamically here -->
+                </tbody>
+            </table>
         </div>
-    
-<script>
-        {% comment %} document.querySelector('#available-user').focus();
-        document.querySelector('#available-user').onkeyup = function(e) {
-            if (e.key === 'Chat') {  // enter, return
-                document.querySelector('#chat-person').click();
-            }
-        };
+    </div>
 
-        document.querySelector('#chat-person').onclick = function(e) {
-            var roomName = document.querySelector('#available-user').value;
-            window.location.pathname = '/chat/' + roomName + '/';
-        };  {% endcomment %}
-
-
+    <script>
+        // Function to retrieve user data and populate the table
         function getUsers() {
-            alert("getdata");
             var baseUrl = "http://127.0.0.1:8000/apitest/ShowUsers";
             $.ajax({
                 method: 'GET',
@@ -65,7 +48,7 @@
                 success: function (data, textStatus, xhr) {
                     console.log('Success:', data);
                     $('tbody#tb3lmydata').empty(); // Clear existing table rows
-                    
+
                     for (var i = 0; i < data.data.length; i++) {
                         const userData = data.data[i];
                         const row = `
@@ -73,10 +56,7 @@
                                 <td>${userData.userId}</td>
                                 <td>${userData.username}</td>
                                 <td>
-                                    <a href="#" class="chat-person">
-                                        <input type="button" value="Chat" onclick='openChat(${userData.userId})' id="chatbutton">
-                                    </a>
-                                    
+                                    <button class="chat-button" onclick="openChat('${userData.username}')">Chat</button>
                                 </td>
                             </tr>
                         `;
@@ -85,44 +65,29 @@
                 },
             });
         }
-        
-        
+
+        // Function to show the user list when the "Users" button is clicked
         function ShowUsers() {
             document.getElementById('divavailableuser').style.display = 'block';
-            getUsers() ;
-            
+            getUsers();
         }
 
-        function openChat(userID)
-        {
-            alert(userID)
+        // Event listener for chat button click
+        $(document).on('click', '.chat-button', function () {
+            const username = $(this).closest('tr').find('td:eq(1)').text(); // Get username from the clicked row
             const roomName = 'room_name'; // Replace with the actual room name
-
-            const url = `/room/${roomName}/?userId=${userID}`;
-            window.location.href= url
-        }   
-        // Assuming userData.userId contains the desired user ID
-        // Assuming userData.userId contains the desired user ID
-        document.addEventListener('DOMContentLoaded', function() {
-        // Get a reference to the chat button
-        const chatButton = document.getElementById('chatbutton');
-
-        console.log("chatButton")
-        console.log(chatButton)
-        // Add a click event listener to the button
-        chatButton.addEventListener('click', function() {
-        // Construct the URL using the user ID
-        const userId = userData.userId;
-        const roomName = 'room_name'; // Replace with the actual room name
-        const url = `/room/${roomName}/?userId=${userId}`;
-
-        // Set the href attribute of the parent anchor element to the constructed URL
-        chatButton.parentElement.href = url;
-        });
+            const url = `/chat/room/${roomName}/?username=${username}`;
+            window.location.href = url;
         });
 
-</script>
-<footer>
-    {% include "flipcart/footer.html" %}
+        // Ensure the DOM is ready before attaching the event listener
+        $(document).ready(function () {
+            // Add your code here, if needed
+        });
+    </script>
+
+    <footer>
+        {% include "flipcart/footer.html" %}
     </footer>
+</body>
 </html>

@@ -70,6 +70,7 @@
     <input id="chat-message-submit" type="button" value="Send">
 
     {{ room_name|json_script:"room-name" }}
+    {{username|json_script:"username" }}
 
 
     
@@ -90,7 +91,25 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
+            console.log("data")
+            console.log(data)
+
+            console.log("username")
+            console.log("{{ user.username }}")
+
+            var currentLoggedInUsername = "{{ user.username }}"
+            var receiverUsername = data.username
+            var senderUsername = data.sender
+            
+            if(currentLoggedInUsername == receiverUsername)
+            {
+                document.querySelector('#chat-log').value += (data.message + '\n');
+            }
+
+            if(currentLoggedInUsername == senderUsername)
+            {
+                document.querySelector('#chat-log').value += (data.message + '\n');
+            }
         };
 
         chatSocket.onclose = function(e) {
@@ -105,10 +124,17 @@
         };
 
         document.querySelector('#chat-message-submit').onclick = function(e) {
+
             const messageInputDom = document.querySelector('#chat-message-input');
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('username');
+            //
+            var currentLoggedInUsername = "{{ user.username }}"
             const message = messageInputDom.value;
             chatSocket.send(JSON.stringify({
-                'message': message
+                'message': message,
+                'username':username,
+                'sender' : currentLoggedInUsername
             }));
             messageInputDom.value = '';
         };
