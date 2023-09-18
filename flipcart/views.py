@@ -10,6 +10,8 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from .models import UserProfile
 
+
+
 def home(request):
     return render(request, "flipcart/home.html")
 
